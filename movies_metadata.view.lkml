@@ -1,7 +1,7 @@
 view: movies_metadata {
   sql_table_name: movies_data.movies_metadata ;;
 
-  dimension: id {
+  dimension: movie_id {
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -134,6 +134,6 @@ view: movies_metadata {
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [movie_id]
   }
 }

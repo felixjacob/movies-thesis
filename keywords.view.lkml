@@ -1,7 +1,7 @@
 view: keywords {
   sql_table_name: movies_data.keywords ;;
 
-  dimension: id {
+  dimension: movie_id {
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -14,6 +14,6 @@ view: keywords {
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [movie_id]
   }
 }

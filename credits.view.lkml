@@ -1,7 +1,7 @@
 view: credits {
   sql_table_name: movies_data.credits ;;
 
-  dimension: id {
+  dimension: movie_id {
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -9,7 +9,7 @@ view: credits {
 
   dimension: cast {
     type: string
-    sql: ${TABLE}.``cast`` ;;
+    sql: ${TABLE}.cast ;;
   }
 
   dimension: crew {
@@ -19,6 +19,6 @@ view: credits {
 
   measure: count {
     type: count
-    drill_fields: [id]
+    drill_fields: [movie_id]
   }
 }
