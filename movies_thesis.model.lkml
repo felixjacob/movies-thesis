@@ -1,6 +1,6 @@
 connection: "thesis_bq"
 
-# include all the views
+# include all them views
 include: "*.view"
 
 datagroup: movies_thesis_default_datagroup {
