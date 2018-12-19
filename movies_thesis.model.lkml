@@ -12,6 +12,8 @@ persist_with: movies_thesis_default_datagroup
 
 explore: credits {}
 
+explore: cast {}
+
 explore: keywords {}
 
 explore: links {}
