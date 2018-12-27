@@ -3,11 +3,11 @@ view: cast {
     sql:
     SELECT
       id,
-      CONCAT('{', `cast`, '}')                                  AS cast_json,
-      JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.character')     AS character_name,
-      JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.gender')        AS gender,
-      JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.name')          AS actor_name,
-      JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.profile_path')  AS picture
+      IF(`cast` <> '[]', CONCAT('{', `cast`, '}'), NULL)            AS cast_json
+      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.character')     AS character_name,
+      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.gender')        AS gender,
+      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.name')          AS actor_name,
+      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.profile_path')  AS picture
     FROM
       (SELECT
         id,
@@ -28,21 +28,21 @@ view: cast {
 
   dimension: character_name {
     type: string
-    sql: ${TABLE}.character_name ;;
+    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.cast_json, '$.character'), '"', '')) ;;
   }
 
   dimension: gender {
     type: string
-    sql: ${TABLE}.gender;;
+    sql: JSON_EXTRACT(${TABLE}.cast_json, '$.gender') ;;
   }
 
   dimension: actor_name {
     type: string
-    sql: ${TABLE}.actor_name;;
+    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.cast_json, '$.name'), '"', '')) ;;
   }
 
   dimension: picture {
     type: string
-    sql: ${TABLE}.picture;;
+    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.cast_json, '$.profile_path'), '"', '')) ;;
   }
 }

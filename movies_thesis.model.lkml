@@ -14,6 +14,8 @@ explore: credits {}
 
 explore: cast {}
 
+explore: crew {}
+
 explore: keywords {}
 
 explore: links {}
