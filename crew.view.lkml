@@ -3,16 +3,11 @@ view: crew {
     sql:
     SELECT
       id,
-      IF(`crew` <> '[]', CONCAT('{', `crew`, '}'), NULL)            AS crew_json
-      --JSON_EXTRACT(CONCAT('{', `crew`, '}'), '$.department')    AS department,
-      --JSON_EXTRACT(CONCAT('{', `crew`, '}'), '$.job')           AS job,
-      --JSON_EXTRACT(CONCAT('{', `crew`, '}'), '$.gender')        AS gender,
-      --JSON_EXTRACT(CONCAT('{', `crew`, '}'), '$.name')          AS name,
-      --JSON_EXTRACT(CONCAT('{', `crew`, '}'), '$.profile_path')  AS picture
+      IF(`crew` <> '[]', CONCAT('{', `crew`, '}'), NULL) AS crew_json
     FROM
       (SELECT
         id,
-        SPLIT(REPLACE(REPLACE(`crew`, '[{', ''), ']}', ''), '}, {') AS crew_array
+        SPLIT(REPLACE(REPLACE(`crew`, '[{', ''), '}]', ''), '}, {') AS crew_array
         FROM movies_data.credits), UNNEST(crew_array) AS `crew` ;;
   }
 

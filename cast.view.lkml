@@ -3,15 +3,11 @@ view: cast {
     sql:
     SELECT
       id,
-      IF(`cast` <> '[]', CONCAT('{', `cast`, '}'), NULL)            AS cast_json
-      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.character')     AS character_name,
-      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.gender')        AS gender,
-      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.name')          AS actor_name,
-      --JSON_EXTRACT(CONCAT('{', `cast`, '}'), '$.profile_path')  AS picture
+      IF(`cast` <> '[]', CONCAT('{', `cast`, '}'), NULL) AS cast_json
     FROM
       (SELECT
         id,
-        SPLIT(REPLACE(REPLACE(`cast`, '[{', ''), ']}', ''), '}, {') AS cast_array
+        SPLIT(REPLACE(REPLACE(`cast`, '[{', ''), '}]', ''), '}, {') AS cast_array
         FROM movies_data.credits), UNNEST(cast_array) AS `cast` ;;
   }
 

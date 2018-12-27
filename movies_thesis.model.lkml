@@ -10,11 +10,11 @@ datagroup: movies_thesis_default_datagroup {
 
 persist_with: movies_thesis_default_datagroup
 
-explore: credits {}
-
 explore: cast {}
 
 explore: crew {}
+
+explore: genres {}
 
 explore: keywords {}
 
