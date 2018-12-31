@@ -2,14 +2,24 @@ view: cast {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
     sql:
+    WITH
+      cast_details AS (
+        SELECT
+          id,
+          IF(c <> '[]', CONCAT('{', c, '}'), NULL) AS cast_json
+        FROM
+          (SELECT
+            id,
+            SPLIT(REPLACE(REPLACE(`cast`, '[{', ''), '}]', ''), '}, {') AS cast_array
+            FROM movies_data.credits), UNNEST(cast_array) AS c)
     SELECT
       id,
-      IF(`cast` <> '[]', CONCAT('{', `cast`, '}'), NULL) AS cast_json
-    FROM
-      (SELECT
-        id,
-        SPLIT(REPLACE(REPLACE(`cast`, '[{', ''), '}]', ''), '}, {') AS cast_array
-        FROM movies_data.credits), UNNEST(cast_array) AS `cast` ;;
+      cast_json,
+      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', ''))     AS character_name,
+      JSON_EXTRACT(cast_json, '$.gender')                                AS gender,
+      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))          AS actor_name,
+      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.profile_path'), '"', ''))  AS picture
+    FROM cast_details ;;
   }
 
   dimension: movie_id {
@@ -18,28 +28,28 @@ view: cast {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: cast_json {
-    type: string
-    sql: ${TABLE}.cast_json ;;
-  }
+#   dimension: cast_json {
+#     type: string
+#     sql: ${TABLE}.cast_json ;;
+#   }
 
   dimension: character_name {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.cast_json, '$.character'), '"', '')) ;;
+    sql: ${TABLE}.character_name ;;
   }
 
   dimension: gender {
     type: string
-    sql: JSON_EXTRACT(${TABLE}.cast_json, '$.gender') ;;
+    sql: ${TABLE}.gender ;;
   }
 
   dimension: actor_name {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.cast_json, '$.name'), '"', '')) ;;
+    sql: ${TABLE}.actor_name ;;
   }
 
   dimension: picture {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.cast_json, '$.profile_path'), '"', '')) ;;
+    sql: ${TABLE}.picture ;;
   }
 }

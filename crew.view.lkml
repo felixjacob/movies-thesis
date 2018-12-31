@@ -2,14 +2,25 @@ view: crew {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
     sql:
+    WITH
+      crew_details AS (
+        SELECT
+          id,
+          IF(c <> '[]', CONCAT('{', c, '}'), NULL) AS crew_json
+        FROM
+          (SELECT
+            id,
+            SPLIT(REPLACE(REPLACE(`crew`, '[{', ''), '}]', ''), '}, {') AS crew_array
+            FROM movies_data.credits), UNNEST(crew_array) AS c)
     SELECT
       id,
-      IF(`crew` <> '[]', CONCAT('{', `crew`, '}'), NULL) AS crew_json
-    FROM
-      (SELECT
-        id,
-        SPLIT(REPLACE(REPLACE(`crew`, '[{', ''), '}]', ''), '}, {') AS crew_array
-        FROM movies_data.credits), UNNEST(crew_array) AS `crew` ;;
+      crew_json,
+      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))    AS department,
+      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))           AS job,
+      JSON_EXTRACT(crew_json, '$.gender')                                AS gender,
+      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))          AS name,
+      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', ''))  AS picture
+    FROM crew_details ;;
   }
 
   dimension: movie_id {
@@ -18,33 +29,33 @@ view: crew {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: crew_json {
-    type: string
-    sql: ${TABLE}.crew_json ;;
-  }
+#   dimension: crew_json {
+#     type: string
+#     sql: ${TABLE}.crew_json ;;
+#   }
 
   dimension: department {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.crew_json, '$.department'), '"', '')) ;;
+    sql: ${TABLE}.department ;;
   }
 
   dimension: job {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.crew_json, '$.job'), '"', '')) ;;
+    sql: ${TABLE}.job ;;
   }
 
   dimension: gender {
     type: string
-    sql: JSON_EXTRACT(${TABLE}.crew_json, '$.gender') ;;
+    sql: ${TABLE}.gender ;;
   }
 
   dimension: name {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.crew_json, '$.name'), '"', '')) ;;
+    sql: ${TABLE}.name ;;
   }
 
   dimension: picture {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.crew_json, '$.profile_path'), '"', '')) ;;
+    sql: ${TABLE}.picture ;;
   }
 }
