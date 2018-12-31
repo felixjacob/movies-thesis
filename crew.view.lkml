@@ -1,5 +1,6 @@
 view: crew {
   derived_table: {
+    datagroup_trigger: movies_thesis_default_datagroup
     sql:
     SELECT
       id,
