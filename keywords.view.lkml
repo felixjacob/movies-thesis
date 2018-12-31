@@ -1,6 +1,7 @@
 view: keywords {
   # sql_table_name: movies_data.keywords ;;
   derived_table: {
+    datagroup_trigger: movies_thesis_default_datagroup
     sql:
     SELECT
       id,
