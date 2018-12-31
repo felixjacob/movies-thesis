@@ -4,7 +4,7 @@ connection: "thesis_bq"
 include: "*.view"
 
 datagroup: movies_thesis_default_datagroup {
-  # sql_trigger: SELECT MAX(id) FROM etl_log;;
+  sql_trigger: SELECT MAX(id) FROM movies_data.movies_metadata;;
   max_cache_age: "24 hour"
 }
 

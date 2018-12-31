@@ -1,14 +1,36 @@
 view: genres {
   derived_table: {
+    datagroup_trigger: movies_thesis_default_datagroup
     sql:
-    SELECT
-      id,
-      IF(`genre` <> '[]', CONCAT('{', `genre`, '}'), NULL) AS genre_json
-    FROM
-      (SELECT
-        id,
-        SPLIT(REPLACE(REPLACE(`genres`, '[{', ''), '}]', ''), '}, {') AS genres_array
-        FROM movies_data.movies_metadata), UNNEST(genres_array) AS `genre` ;;
+    WITH
+      genres_split AS (
+        SELECT
+          id,
+          SPLIT(REPLACE(REPLACE(`genres`, '[{', ''), '}]', ''), '}, {') AS genres_array
+        FROM movies_data.movies_metadata
+      ),
+      genres AS (
+        SELECT
+          id,
+          ARRAY(SELECT
+                  TRIM(REPLACE(IFNULL(JSON_EXTRACT(CONCAT('{', g, '}'), '$.name'), ''), '"', ''))
+                FROM UNNEST(genres_array) AS g ORDER BY 1) AS genres_array
+        FROM genres_split
+      ),
+      genres_unnest AS (
+        SELECT
+          id,
+          genre
+        FROM genres, UNNEST(genres_array) AS genre
+      )
+      SELECT
+        a.id,
+        a.genre,
+        ARRAY_TO_STRING(b.genres_array, ', ') AS genres,
+        b.genres_array
+      FROM genres_unnest a
+      JOIN genres b
+        ON a.id = b.id ;;
   }
 
   dimension: movie_id {
@@ -17,18 +39,17 @@ view: genres {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: genre_json {
-    type: string
-    sql: ${TABLE}.genre_json ;;
-  }
-
   dimension: genre {
     type: string
-    sql: TRIM(REPLACE(JSON_EXTRACT(${TABLE}.genre_json, '$.name'), '"', '')) ;;
+    sql: ${TABLE}.genre ;;
   }
 
-  measure: genres {
+  dimension: genres {
     type: string
-    sql: TRIM(STRING_AGG(CONCAT(' ', ${genre}) ORDER BY ${genre})) ;;
+    sql: ${TABLE}.genres ;;
+  }
+
+  measure: count {
+    type: count
   }
 }
