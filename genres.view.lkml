@@ -50,6 +50,7 @@ view: genres {
   }
 
   measure: count {
-    type: count
+    type: count_distinct
+    sql: ${TABLE}.id ;;
   }
 }
