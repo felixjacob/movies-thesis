@@ -1,4 +1,4 @@
-view: movies_metadata {
+view: movies {
   sql_table_name: movies_data.movies_metadata ;;
 
   dimension: movie_id {
