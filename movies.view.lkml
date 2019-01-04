@@ -1,5 +1,30 @@
 view: movies {
-  sql_table_name: movies_data.movies_metadata ;;
+  # sql_table_name: movies_data.movies_metadata ;;
+
+  derived_table: {
+    datagroup_trigger: movies_thesis_default_datagroup
+    sql:
+    SELECT DISTINCT
+      id,
+      adult,
+      belongs_to_collection,
+      budget,
+      homepage,
+      original_language,
+      original_title,
+      overview,
+      poster_path,
+      production_companies,
+      production_countries,
+      release_date,
+      revenue,
+      runtime,
+      spoken_languages,
+      status,
+      tagline,
+      title
+    FROM movies_data.movies_metadata ;;
+  }
 
   dimension: movie_id {
     primary_key: yes
@@ -22,20 +47,20 @@ view: movies {
     sql: ${TABLE}.budget ;;
   }
 
-  dimension: genres {
-    type: string
-    sql: ${TABLE}.genres ;;
-  }
+  # dimension: genres {
+  #   type: string
+  #   sql: ${TABLE}.genres ;;
+  # }
 
   dimension: homepage {
     type: string
     sql: ${TABLE}.homepage ;;
   }
 
-  dimension: imdb_id {
-    type: string
-    sql: ${TABLE}.imdb_id ;;
-  }
+  # dimension: imdb_id {
+  #   type: string
+  #   sql: ${TABLE}.imdb_id ;;
+  # }
 
   dimension: original_language {
     type: string
@@ -52,10 +77,10 @@ view: movies {
     sql: ${TABLE}.overview ;;
   }
 
-  dimension: popularity {
-    type: number
-    sql: ${TABLE}.popularity ;;
-  }
+  # dimension: popularity {
+  #   type: number
+  #   sql: ${TABLE}.popularity ;;
+  # }
 
   dimension: poster_path {
     type: string
@@ -117,20 +142,20 @@ view: movies {
     sql: ${TABLE}.title ;;
   }
 
-  dimension: video {
-    type: yesno
-    sql: ${TABLE}.video ;;
-  }
+  # dimension: video {
+  #   type: yesno
+  #   sql: ${TABLE}.video ;;
+  # }
 
-  dimension: vote_average {
-    type: number
-    sql: ${TABLE}.vote_average ;;
-  }
+  # dimension: vote_average {
+  #   type: number
+  #   sql: ${TABLE}.vote_average ;;
+  # }
 
-  dimension: vote_count {
-    type: number
-    sql: ${TABLE}.vote_count ;;
-  }
+  # dimension: vote_count {
+  #   type: number
+  #   sql: ${TABLE}.vote_count ;;
+  # }
 
   measure: count {
     type: count
