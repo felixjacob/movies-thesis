@@ -15,6 +15,7 @@ view: cast {
     SELECT
       id,
       cast_json,
+      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))     AS cast_id,
       TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', ''))     AS character_name,
       JSON_EXTRACT(cast_json, '$.gender')                                AS gender,
       TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))          AS actor_name,
@@ -22,8 +23,13 @@ view: cast {
     FROM cast_details ;;
   }
 
-  dimension: movie_id {
+  dimension: cast_id {
     primary_key: yes
+    type: string
+    sql: ${TABLE}.cast_id;;
+  }
+
+  dimension: movie_id {
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -51,5 +57,9 @@ view: cast {
   dimension: picture {
     type: string
     sql: ${TABLE}.picture ;;
+  }
+
+  measure: count {
+    type: count
   }
 }

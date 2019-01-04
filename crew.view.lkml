@@ -15,6 +15,7 @@ view: crew {
     SELECT
       id,
       crew_json,
+      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))     AS crew_id,
       TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))    AS department,
       TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))           AS job,
       JSON_EXTRACT(crew_json, '$.gender')                                AS gender,
@@ -23,8 +24,13 @@ view: crew {
     FROM crew_details ;;
   }
 
-  dimension: movie_id {
+  dimension: crew_id {
     primary_key: yes
+    type: string
+    sql: ${TABLE}.crew_id;;
+  }
+
+  dimension: movie_id {
     type: number
     sql: ${TABLE}.id ;;
   }
@@ -57,5 +63,9 @@ view: crew {
   dimension: picture {
     type: string
     sql: ${TABLE}.picture ;;
+  }
+
+  measure: count {
+    type: count
   }
 }
