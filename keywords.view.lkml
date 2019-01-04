@@ -12,7 +12,7 @@ view: keywords {
             id,
             SPLIT(REPLACE(REPLACE(k.keywords, '[{', ''), '}]', ''), '}, {') AS keywords_array
             FROM movies_data.keywords AS k), UNNEST(keywords_array) AS k)
-    SELECT
+    SELECT DISTINCT
       id,
       keyword_json,
       --LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.id'), '"', ''))) AS keyword_id,
@@ -45,5 +45,9 @@ view: keywords {
   dimension: keyword {
     type: string
     sql: ${TABLE}.keyword ;;
+  }
+
+  measure: count {
+    type: count
   }
 }

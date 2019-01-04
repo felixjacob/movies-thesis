@@ -12,10 +12,10 @@ view: crew {
             id,
             SPLIT(REPLACE(REPLACE(`crew`, '[{', ''), '}]', ''), '}, {') AS crew_array
             FROM movies_data.credits), UNNEST(crew_array) AS c)
-    SELECT
+    SELECT DISTINCT
       id,
       crew_json,
-      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))     AS crew_id,
+      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.credit_id'), '"', ''))     AS crew_id,
       TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))    AS department,
       TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))           AS job,
       JSON_EXTRACT(crew_json, '$.gender')                                AS gender,

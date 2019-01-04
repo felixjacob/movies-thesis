@@ -7,7 +7,7 @@ view: genres {
         SELECT
           id,
           SPLIT(REPLACE(REPLACE(`genres`, '[{', ''), '}]', ''), '}, {') AS genres_array
-        FROM movies_data.movies_metadata
+        FROM (SELECT DISTINCT id, `genres` FROM movies_data.movies_metadata)
       ),
       genres AS (
         SELECT
@@ -18,7 +18,7 @@ view: genres {
         FROM genres_split
       ),
       genres_unnest AS (
-        SELECT
+        SELECT DISTINCT
           id,
           genre
         FROM genres, UNNEST(genres_array) AS genre
@@ -55,8 +55,12 @@ view: genres {
     sql: ${TABLE}.genres ;;
   }
 
-  measure: count {
+  measure: count_distinct {
     type: count_distinct
     sql: ${TABLE}.id ;;
+  }
+
+  measure: count {
+    type: count
   }
 }

@@ -12,7 +12,7 @@ view: cast {
             id,
             SPLIT(REPLACE(REPLACE(`cast`, '[{', ''), '}]', ''), '}, {') AS cast_array
             FROM movies_data.credits), UNNEST(cast_array) AS c)
-    SELECT
+    SELECT DISTINCT
       id,
       cast_json,
       TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))     AS cast_id,
