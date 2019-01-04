@@ -33,8 +33,14 @@ view: genres {
         ON a.id = b.id ;;
   }
 
-  dimension: movie_id {
+  dimension: pk {
+    hidden: yes
     primary_key: yes
+    type: string
+    sql: CONCAT(${movie_id}, ${genre}) ;;
+  }
+
+  dimension: movie_id {
     type: number
     sql: ${TABLE}.id ;;
   }

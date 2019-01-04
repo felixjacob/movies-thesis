@@ -15,15 +15,27 @@ view: keywords {
     SELECT
       id,
       keyword_json,
+      --LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.id'), '"', ''))) AS keyword_id,
       LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.name'), '"', ''))) AS keyword
     FROM keywords ;;
   }
 
-  dimension: movie_id {
+  dimension: pk {
+    hidden: yes
     primary_key: yes
+    type: string
+    sql: CONCAT(${movie_id}, ${keyword}) ;;
+  }
+
+  dimension: movie_id {
     type: number
     sql: ${TABLE}.id ;;
   }
+
+#   dimension: keyword_id {
+#     type: number
+#     sql: ${TABLE}.keyword_id ;;
+#   }
 
 #   dimension: keyword_json {
 #     type: string
