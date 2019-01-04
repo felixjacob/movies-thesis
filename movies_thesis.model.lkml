@@ -21,6 +21,7 @@ explore: keywords {}
 explore: links {}
 
 explore: movies {
+  sql_always_where: ${status} = 'Released' ;;
   join: genres {
     sql_on: ${movies.movie_id} = ${genres.movie_id} ;;
     type: left_outer
