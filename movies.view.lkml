@@ -128,6 +128,7 @@ view: movies {
   }
 
   dimension: status {
+    hidden: yes
     type: string
     sql: ${TABLE}.status ;;
   }
