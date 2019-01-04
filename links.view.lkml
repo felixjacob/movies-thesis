@@ -7,6 +7,7 @@ view: links {
   }
 
   dimension: movie_id {
+    primary_key: yes
     type: number
     sql: ${TABLE}.movieId ;;
   }
