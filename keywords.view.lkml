@@ -13,7 +13,8 @@ view: keywords {
             SPLIT(REPLACE(REPLACE(k.keywords, '[{', ''), '}]', ''), '}, {') AS keywords_array
             FROM movies_data.keywords AS k), UNNEST(keywords_array) AS k)
     SELECT DISTINCT
-      id,
+      ROW_NUMBER() OVER () AS id,
+      a.id                 AS movie_id,
       keyword_json,
       --LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.id'), '"', ''))) AS keyword_id,
       LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.name'), '"', ''))) AS keyword
@@ -24,12 +25,12 @@ view: keywords {
     hidden: yes
     primary_key: yes
     type: string
-    sql: CONCAT(${movie_id}, ${keyword}) ;;
+    sql: ${TABLE}.id ;;
   }
 
   dimension: movie_id {
     type: number
-    sql: ${TABLE}.id ;;
+    sql: ${TABLE}.movie_id ;;
   }
 
 #   dimension: keyword_id {

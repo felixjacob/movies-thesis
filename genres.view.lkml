@@ -24,7 +24,8 @@ view: genres {
         FROM genres, UNNEST(genres_array) AS genre
       )
       SELECT
-        a.id,
+        ROW_NUMBER() OVER () AS id,
+        a.id                 AS movie_id,
         a.genre,
         ARRAY_TO_STRING(b.genres_array, ', ') AS genres,
         b.genres_array
@@ -36,13 +37,13 @@ view: genres {
   dimension: pk {
     hidden: yes
     primary_key: yes
-    type: string
-    sql: CONCAT(${movie_id}, ${genre}) ;;
+    type: number
+    sql: ${TABLE}.id ;;
   }
 
   dimension: movie_id {
     type: number
-    sql: ${TABLE}.id ;;
+    sql: ${TABLE}.movie_id ;;
   }
 
   dimension: genre {
