@@ -34,7 +34,7 @@ view: genres {
         ON a.id = b.id ;;
   }
 
-  dimension: pk {
+  dimension: id {
     hidden: yes
     primary_key: yes
     type: number

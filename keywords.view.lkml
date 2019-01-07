@@ -21,10 +21,10 @@ view: keywords {
     FROM keywords ;;
   }
 
-  dimension: pk {
+  dimension: id {
     hidden: yes
     primary_key: yes
-    type: string
+    type: number
     sql: ${TABLE}.id ;;
   }
 
