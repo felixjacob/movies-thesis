@@ -14,7 +14,7 @@ view: keywords {
             FROM movies_data.keywords AS k), UNNEST(keywords_array) AS k)
     SELECT DISTINCT
       ROW_NUMBER() OVER () AS id,
-      a.id                 AS movie_id,
+      id                   AS movie_id,
       keyword_json,
       --LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.id'), '"', ''))) AS keyword_id,
       LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.name'), '"', ''))) AS keyword
