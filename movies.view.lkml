@@ -5,8 +5,7 @@ view: movies {
     datagroup_trigger: movies_thesis_default_datagroup
     sql:
     SELECT DISTINCT
-      id,
-      adult,
+      id AS movie_id,
       belongs_to_collection,
       budget,
       homepage,
@@ -29,12 +28,7 @@ view: movies {
   dimension: movie_id {
     primary_key: yes
     type: number
-    sql: ${TABLE}.id ;;
-  }
-
-  dimension: adult {
-    type: yesno
-    sql: ${TABLE}.adult ;;
+    sql: ${TABLE}.movie_id ;;
   }
 
   dimension: belongs_to_collection {
@@ -47,20 +41,10 @@ view: movies {
     sql: ${TABLE}.budget ;;
   }
 
-  # dimension: genres {
-  #   type: string
-  #   sql: ${TABLE}.genres ;;
-  # }
-
   dimension: homepage {
     type: string
     sql: ${TABLE}.homepage ;;
   }
-
-  # dimension: imdb_id {
-  #   type: string
-  #   sql: ${TABLE}.imdb_id ;;
-  # }
 
   dimension: original_language {
     type: string
@@ -76,11 +60,6 @@ view: movies {
     type: string
     sql: ${TABLE}.overview ;;
   }
-
-  # dimension: popularity {
-  #   type: number
-  #   sql: ${TABLE}.popularity ;;
-  # }
 
   dimension: poster_path {
     type: string
@@ -142,21 +121,6 @@ view: movies {
     type: string
     sql: ${TABLE}.title ;;
   }
-
-  # dimension: video {
-  #   type: yesno
-  #   sql: ${TABLE}.video ;;
-  # }
-
-  # dimension: vote_average {
-  #   type: number
-  #   sql: ${TABLE}.vote_average ;;
-  # }
-
-  # dimension: vote_count {
-  #   type: number
-  #   sql: ${TABLE}.vote_count ;;
-  # }
 
   measure: count {
     type: count
