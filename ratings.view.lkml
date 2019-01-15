@@ -5,8 +5,13 @@ view: ratings {
     sql:
     SELECT
       ROW_NUMBER() OVER () AS id,
-      *
-    FROM movies_data.ratings
+      b.tmdbId AS movieId,
+      a.rating,
+      a.timestamp,
+      a.userId
+    FROM movies_data.ratings AS a
+    JOIN movies_data.links AS b
+      ON a.movieId = b.movieId
     ;;
   }
 
