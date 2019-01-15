@@ -14,12 +14,11 @@ view: cast {
             FROM movies_data.credits), UNNEST(cast_array) AS c),
       cast_formatted AS (
         SELECT DISTINCT
-          id                                                                 AS movie_id,
+          id                                                                      AS movie_id,
           --cast_json,
-          --TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))     AS cast_id,
-
-          NULLIF(CAST(JSON_EXTRACT(cast_json, '$.gender') AS INT64), 0)      AS gender,
-          TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))          AS actor_name,
+          --TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))          AS cast_id,
+          NULLIF(CAST(JSON_EXTRACT(cast_json, '$.gender') AS INT64), 0)           AS gender,
+          TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))               AS actor_name,
           MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.profile_path'), '"', '')))  AS picture,
           MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', '')))     AS character_name
         FROM cast_details
