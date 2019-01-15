@@ -11,27 +11,42 @@ view: cast {
           (SELECT
             id,
             SPLIT(REPLACE(REPLACE(`cast`, '[{', ''), '}]', ''), '}, {') AS cast_array
-            FROM movies_data.credits), UNNEST(cast_array) AS c)
-    SELECT DISTINCT
-      id,
-      cast_json,
-      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))     AS cast_id,
-      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', ''))     AS character_name,
-      JSON_EXTRACT(cast_json, '$.gender')                                AS gender,
-      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))          AS actor_name,
-      TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.profile_path'), '"', ''))  AS picture
-    FROM cast_details ;;
+            FROM movies_data.credits), UNNEST(cast_array) AS c),
+      cast_formatted AS (
+        SELECT DISTINCT
+          id                                                                 AS movie_id,
+          --cast_json,
+          --TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))     AS cast_id,
+
+          NULLIF(CAST(JSON_EXTRACT(cast_json, '$.gender') AS INT64), 0)      AS gender,
+          TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))          AS actor_name,
+          MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.profile_path'), '"', '')))  AS picture,
+          MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', '')))     AS character_name
+        FROM cast_details
+        GROUP BY 1, 2, 3)
+
+    SELECT
+      ROW_NUMBER() OVER () AS id,
+      *
+    FROM cast_formatted ;;
   }
 
-  dimension: cast_id {
+#   dimension: cast_id {
+#     primary_key: yes
+#     type: string
+#     sql: ${TABLE}.cast_id;;
+#   }
+
+  dimension: id {
     primary_key: yes
-    type: string
-    sql: ${TABLE}.cast_id;;
+    hidden: yes
+    type: number
+    sql: ${TABLE}.id ;;
   }
 
   dimension: movie_id {
     type: number
-    sql: ${TABLE}.id ;;
+    sql: ${TABLE}.movie_id ;;
   }
 
 #   dimension: cast_json {
@@ -45,7 +60,7 @@ view: cast {
   }
 
   dimension: gender {
-    type: string
+    type: number
     sql: ${TABLE}.gender ;;
   }
 

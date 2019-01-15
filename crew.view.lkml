@@ -11,28 +11,41 @@ view: crew {
           (SELECT
             id,
             SPLIT(REPLACE(REPLACE(`crew`, '[{', ''), '}]', ''), '}, {') AS crew_array
-            FROM movies_data.credits), UNNEST(crew_array) AS c)
-    SELECT DISTINCT
-      id,
-      crew_json,
-      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.credit_id'), '"', ''))     AS crew_id,
-      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))    AS department,
-      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))           AS job,
-      JSON_EXTRACT(crew_json, '$.gender')                                AS gender,
-      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))          AS name,
-      TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', ''))  AS picture
-    FROM crew_details ;;
+            FROM movies_data.credits), UNNEST(crew_array) AS c),
+      crew_formatted AS (
+        SELECT DISTINCT
+          id                                                                 AS movie_id,
+          --crew_json,
+          --TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.credit_id'), '"', ''))     AS crew_id,
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))    AS department,
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))           AS job,
+          NULLIF(CAST(JSON_EXTRACT(crew_json, '$.gender') AS INT64), 0)      AS gender,
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))          AS name,
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', ''))  AS picture
+        FROM crew_details
+
+    SELECT
+      ROW_NUMBER() OVER () AS id,
+      *
+    FROM crew_formatted ;;
   }
 
-  dimension: crew_id {
+#   dimension: crew_id {
+#     primary_key: yes
+#     type: string
+#     sql: ${TABLE}.crew_id;;
+#   }
+
+  dimension: id {
     primary_key: yes
-    type: string
-    sql: ${TABLE}.crew_id;;
+    hidden: yes
+    type: number
+    sql: ${TABLE}.id ;;
   }
 
   dimension: movie_id {
     type: number
-    sql: ${TABLE}.id ;;
+    sql: ${TABLE}.movie_id ;;
   }
 
 #   dimension: crew_json {
@@ -51,7 +64,7 @@ view: crew {
   }
 
   dimension: gender {
-    type: string
+    type: number
     sql: ${TABLE}.gender ;;
   }
 
