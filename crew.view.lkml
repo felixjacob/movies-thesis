@@ -22,7 +22,7 @@ view: crew {
           NULLIF(CAST(JSON_EXTRACT(crew_json, '$.gender') AS INT64), 0)      AS gender,
           TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))          AS name,
           TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', ''))  AS picture
-        FROM crew_details
+        FROM crew_details)
 
     SELECT
       ROW_NUMBER() OVER () AS id,
