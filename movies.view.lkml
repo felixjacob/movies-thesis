@@ -9,6 +9,7 @@ view: movies {
       belongs_to_collection,
       budget,
       homepage,
+      imdb_id,
       original_language,
       original_title,
       overview,
@@ -44,6 +45,11 @@ view: movies {
   dimension: homepage {
     type: string
     sql: ${TABLE}.homepage ;;
+  }
+
+  dimension: imdb_id {
+    type: string
+    sql: ${TABLE}.imdb_id ;;
   }
 
   dimension: original_language {
@@ -120,10 +126,29 @@ view: movies {
   dimension: title {
     type: string
     sql: ${TABLE}.title ;;
+    link: {
+      label: "Link to IMDB"
+      url: "https://www.imdb.com/title/{{imdb_id._value}}"
+      icon_url: "https://ia.media-imdb.com/images/M/MV5BMTczNjM0NDY0Ml5BMl5BcG5nXkFtZTgwMTk1MzQ2OTE@._V1_.png"
+    }
+    link: {
+      label: "Link to TMDB"
+      url: "https://www.themoviedb.org/movie/{{links.tmdb_id._value}}"
+      icon_url: "https://www.themoviedb.org/assets/1/v4/logos/208x226-stacked-green-9484383bd9853615c113f020def5cbe27f6d08a84ff834f41371f223ebad4a3c.png"
+    }
   }
 
   measure: count {
     type: count
     drill_fields: [movie_id]
+  }
+
+  set: release {
+    fields: [release_date, release_month, release_quarter, release_raw, release_week, release_year]
+  }
+
+  set: movies {
+    fields: [movie_id, budget, original_language, original_title,
+      overview, release*, revenue, runtime, status, tagline, title]
   }
 }
