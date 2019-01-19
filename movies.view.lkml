@@ -48,6 +48,7 @@ view: movies {
   }
 
   dimension: imdb_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.imdb_id ;;
   }
@@ -67,9 +68,10 @@ view: movies {
     sql: ${TABLE}.overview ;;
   }
 
-  dimension: poster_path {
+  dimension: poster {
     type: string
     sql: ${TABLE}.poster_path ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="100%"> ;;
   }
 
   dimension: production_companies {
@@ -165,6 +167,7 @@ view: movies {
       original_language,
       original_title,
       overview,
+      poster,
       release*,
       revenue,
       runtime,
