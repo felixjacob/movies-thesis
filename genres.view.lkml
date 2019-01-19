@@ -47,11 +47,13 @@ view: genres {
   }
 
   dimension: genre {
+    group_label: "Genres"
     type: string
     sql: ${TABLE}.genre ;;
   }
 
-  dimension: genres {
+  dimension: all_genres {
+    group_label: "Genres"
     type: string
     sql: ${TABLE}.genres ;;
   }
@@ -63,5 +65,9 @@ view: genres {
 
   measure: count {
     type: count
+  }
+
+  set: genres {
+    fields: [genre, all_genres]
   }
 }
