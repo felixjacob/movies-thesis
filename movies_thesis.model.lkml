@@ -16,7 +16,10 @@ persist_with: movies_thesis_default_datagroup
 explore: actors {
   from: cast
   sql_always_where: ${actor_name} IS NOT NULL ;;
-  fields: [actors.cast*, actor_facts.total_movies_count, movies.movies*, genres.genres*]
+  fields:
+  [ALL_FIELDS*, -actors.movie_id, -movies.imdb_id]
+#   [actors.cast*, actor_facts.total_movies_count,
+#     movies.movies*, genres.genres*, ratings_summary.ratings*]
   join: actor_facts {
     view_label: "Actors"
     sql_on: ${actors.actor_name} = ${actor_facts.actor_name} ;;
@@ -31,13 +34,22 @@ explore: actors {
     sql_on: ${actors.movie_id} = ${movies.movie_id} ;;
     type: inner
     relationship: many_to_one
+    fields: [movies.movies*]
   }
 
   join: genres {
     view_label: "Movies Details"
-    sql_on: ${movies.movie_id} = ${genres.movie_id} ;;
+    sql_on: ${actors.movie_id} = ${genres.movie_id} ;;
     type: inner
     relationship: many_to_many
+    fields: [genres.genres*]
+  }
+
+  join: ratings_summary {
+    sql_on: ${actors.movie_id} = ${ratings_summary.movie_id} ;;
+    type: inner
+    relationship: many_to_many
+    fields: [ratings_summary.ratings*]
   }
 }
 
@@ -85,7 +97,7 @@ explore: movies {
 }
 
 ###########################
-# HIDDEN EXPLORES
+# HIDDEN EXPLORES (DEBUG)
 ###########################
 
 explore: actor_facts { hidden: yes }

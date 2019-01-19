@@ -7,7 +7,7 @@ view: movies {
     SELECT DISTINCT
       id AS movie_id,
       belongs_to_collection,
-      budget,
+      NULLIF(budget, 0) AS budget,
       homepage,
       imdb_id,
       original_language,
@@ -17,7 +17,7 @@ view: movies {
       production_companies,
       production_countries,
       release_date,
-      revenue,
+      NULLIF(revenue, 0) AS revenue,
       runtime,
       spoken_languages,
       status,
@@ -133,7 +133,8 @@ view: movies {
     }
     link: {
       label: "Link to TMDB"
-      url: "https://www.themoviedb.org/movie/{{links.tmdb_id._value}}"
+#       url: "https://www.themoviedb.org/movie/{{links.tmdb_id._value}}"
+      url: "https://www.themoviedb.org/movie/{{movie_id._value}}"
       icon_url: "https://www.themoviedb.org/assets/1/v4/logos/208x226-stacked-green-9484383bd9853615c113f020def5cbe27f6d08a84ff834f41371f223ebad4a3c.png"
     }
   }
@@ -144,11 +145,32 @@ view: movies {
   }
 
   set: release {
-    fields: [release_date, release_month, release_quarter, release_raw, release_week, release_year]
+    fields:
+    [
+      release_date,
+      release_month,
+      release_quarter,
+      release_raw,
+      release_week,
+      release_year
+    ]
   }
 
   set: movies {
-    fields: [movie_id, budget, original_language, original_title,
-      overview, release*, revenue, runtime, status, tagline, title]
+    fields:
+    [
+      movie_id,
+      budget,
+      imdb_id,
+      original_language,
+      original_title,
+      overview,
+      release*,
+      revenue,
+      runtime,
+      status,
+      tagline,
+      title
+    ]
   }
 }

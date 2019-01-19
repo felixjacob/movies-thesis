@@ -17,12 +17,12 @@ view: cast {
           id                                                                      AS movie_id,
           --cast_json,
           --TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))          AS cast_id,
-          NULLIF(CAST(JSON_EXTRACT(cast_json, '$.gender') AS INT64), 0)           AS gender,
           TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))               AS actor_name,
+          MAX(NULLIF(CAST(JSON_EXTRACT(cast_json, '$.gender') AS INT64), 0))      AS gender,
           MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.profile_path'), '"', '')))  AS picture,
           MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', '')))     AS character_name
         FROM cast_details
-        GROUP BY 1, 2, 3)
+        GROUP BY 1, 2)
 
     SELECT
       ROW_NUMBER() OVER () AS id,
@@ -68,9 +68,16 @@ view: cast {
     sql: ${TABLE}.actor_name ;;
   }
 
-  dimension: picture {
+  dimension: picture_big {
     type: string
     sql: ${TABLE}.picture ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="50%"> ;;
+  }
+
+  dimension: picture_small {
+    type: string
+    sql: ${TABLE}.picture ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="15%"> ;;
   }
 
   measure: count_movies_released {
@@ -82,6 +89,6 @@ view: cast {
   }
 
   set: cast {
-    fields: [actor_name, gender, character_name, picture, count_movies_released]
+    fields: [actor_name, gender, character_name, picture_big, picture_small, count_movies_released]
   }
 }
