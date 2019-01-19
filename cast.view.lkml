@@ -68,6 +68,12 @@ view: cast {
     sql: ${TABLE}.actor_name ;;
   }
 
+  dimension: actor_name_big {
+    type: string
+    sql: ${actor_name} ;;
+    html: <b><p style="font-size:60px">{{value}}</p></b> ;;
+  }
+
   dimension: picture_big {
     type: string
     sql: ${TABLE}.picture ;;
@@ -77,7 +83,7 @@ view: cast {
   dimension: picture_small {
     type: string
     sql: ${TABLE}.picture ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="15%"> ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100%"> ;;
   }
 
   measure: count_movies_released {
@@ -89,6 +95,15 @@ view: cast {
   }
 
   set: cast {
-    fields: [actor_name, gender, character_name, picture_big, picture_small, count_movies_released]
+    fields:
+    [
+      actor_name,
+      actor_name_big,
+      gender,
+      character_name,
+      picture_big,
+      picture_small,
+      count_movies_released
+    ]
   }
 }

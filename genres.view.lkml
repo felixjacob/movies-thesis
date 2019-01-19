@@ -68,6 +68,10 @@ view: genres {
   }
 
   set: genres {
-    fields: [genre, all_genres]
+    fields:
+    [
+      genre,
+      all_genres
+    ]
   }
 }
