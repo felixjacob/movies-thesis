@@ -4,21 +4,46 @@ connection: "thesis_bq"
 include: "*.view"
 
 datagroup: movies_thesis_default_datagroup {
-  sql_trigger: SELECT MAX(id) FROM movies_data.movies_metadata;;
-  max_cache_age: "-1 hour"
+  sql_trigger: SELECT MAX(id) FROM movies_data.movies_metadata ;;
 }
 
 persist_with: movies_thesis_default_datagroup
 
-explore: cast {}
+###########################
+# ACTORS EXPLORE
+###########################
 
-explore: crew {}
+explore: actors {
+  from: cast
+  sql_always_where: ${actor_name} IS NOT NULL ;;
+  fields: [actors.cast*, actor_facts.total_movies_count, movies.movies*, genres.genres*]
+  join: actor_facts {
+    view_label: "Actors"
+    sql_on: ${actors.actor_name} = ${actor_facts.actor_name} ;;
+    type: inner
+    relationship: one_to_one
+    fields: [actor_facts.total_movies_count]
+  }
 
-explore: genres {}
+  join: movies {
+    view_label: "Movies Details"
+    sql_where: ${movies.status} = 'Released' ;;
+    sql_on: ${actors.movie_id} = ${movies.movie_id} ;;
+    type: inner
+    relationship: many_to_one
+  }
 
-explore: keywords {}
+  join: genres {
+    view_label: "Movies Details"
+    sql_on: ${movies.movie_id} = ${genres.movie_id} ;;
+    type: inner
+    relationship: many_to_many
+  }
+}
 
-explore: links {}
+###########################
+# MOVIES EXPLORE
+###########################
 
 explore: movies {
   sql_always_where: ${status} = 'Released' ;;
@@ -51,10 +76,28 @@ explore: movies {
     type: left_outer
     relationship: one_to_many
   }
+
+  join: links {
+    sql_on: ${movies.movie_id} = ${links.tmdb_id} ;;
+    type: left_outer
+    relationship: one_to_one
+  }
 }
 
-explore: ratings {
-  hidden: yes
-}
+###########################
+# HIDDEN EXPLORES
+###########################
 
-explore: ratings_summary {}
+explore: actor_facts { hidden: yes }
+
+explore: crew { hidden: yes }
+
+explore: genres { hidden: yes }
+
+explore: keywords { hidden: yes }
+
+explore: links { hidden: yes }
+
+explore: ratings { hidden: yes }
+
+explore: ratings_summary { hidden: yes }
