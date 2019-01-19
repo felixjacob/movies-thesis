@@ -35,4 +35,8 @@ view: ratings_summary {
     type: number
     sql: SUM(${TABLE}.rating * ${TABLE}.rating_count) / ${rating_count} ;;
   }
+
+  set: ratings {
+    fields: [rating, rating_count, average_rating]
+  }
 }
