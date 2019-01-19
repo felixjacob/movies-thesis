@@ -73,7 +73,15 @@ view: cast {
     sql: ${TABLE}.picture ;;
   }
 
-  measure: count {
+  measure: count_movies_released {
     type: count
+    filters: {
+      field: movies.status
+      value: "Released"
+    }
+  }
+
+  set: cast {
+    fields: [actor_name, gender, character_name, picture, count_movies_released]
   }
 }
