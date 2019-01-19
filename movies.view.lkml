@@ -141,9 +141,22 @@ view: movies {
     }
   }
 
-  measure: count {
+  measure: movies_count {
     type: count
-    drill_fields: [movie_id]
+#     filters: {
+#       field: movies.status
+#       value: "Released"
+#     }
+    drill_fields:
+    [
+      release_year,
+      title,
+      movies.poster,
+      actors.character_name,
+      overview,
+      genres.all_genres,
+      ratings_summary.average_rating
+    ]
   }
 
   set: release {
@@ -173,7 +186,8 @@ view: movies {
       runtime,
       status,
       tagline,
-      title
+      title,
+      movies_count
     ]
   }
 }

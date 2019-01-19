@@ -86,24 +86,6 @@ view: cast {
     html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100px"> ;;
   }
 
-  measure: count_movies_released {
-    type: count
-#     filters: {
-#       field: movies.status
-#       value: "Released"
-#     }
-    drill_fields:
-    [
-      movies.release_year,
-      movies.title,
-      movies.poster,
-      actors.character_name,
-      movies.overview,
-      genres.all_genres,
-      ratings_summary.average_rating
-    ]
-  }
-
   set: cast {
     fields:
     [
@@ -112,8 +94,7 @@ view: cast {
       gender,
       character_name,
       picture_big,
-      picture_small,
-      count_movies_released
+      picture_small
     ]
   }
 }
