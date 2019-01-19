@@ -47,6 +47,7 @@ view: ratings_summary {
       movies.poster,
       actors.character_name,
       movies.overview,
+      genres.all_genres,
       average_rating
     ]
   }

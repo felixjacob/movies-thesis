@@ -15,7 +15,10 @@ persist_with: movies_thesis_default_datagroup
 
 explore: actors {
   from: cast
-  sql_always_where: ${actor_name} IS NOT NULL ;;
+  sql_always_where:
+    ${actor_name} IS NOT NULL
+    AND ${movies.status} = 'Released'
+    AND ${genres.all_genres} NOT LIKE '%Documentary%' ;;
   fields:
   [ALL_FIELDS*, -actors.movie_id]
 #   [actors.cast*, actor_facts.total_movies_count,
@@ -30,7 +33,7 @@ explore: actors {
 
   join: movies {
     view_label: "Movies Details"
-    sql_where: ${movies.status} = 'Released' ;;
+#     sql_where: ${movies.status} = 'Released' ;;
     sql_on: ${actors.movie_id} = ${movies.movie_id} ;;
     type: inner
     relationship: many_to_one

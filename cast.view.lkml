@@ -77,21 +77,31 @@ view: cast {
   dimension: picture_big {
     type: string
     sql: ${TABLE}.picture ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="50%"> ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="250px"> ;;
   }
 
   dimension: picture_small {
     type: string
     sql: ${TABLE}.picture ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100%"> ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100px"> ;;
   }
 
   measure: count_movies_released {
     type: count
-    filters: {
-      field: movies.status
-      value: "Released"
-    }
+#     filters: {
+#       field: movies.status
+#       value: "Released"
+#     }
+    drill_fields:
+    [
+      movies.release_year,
+      movies.title,
+      movies.poster,
+      actors.character_name,
+      movies.overview,
+      genres.all_genres,
+      ratings_summary.average_rating
+    ]
   }
 
   set: cast {

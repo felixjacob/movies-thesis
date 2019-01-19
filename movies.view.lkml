@@ -71,7 +71,7 @@ view: movies {
   dimension: poster {
     type: string
     sql: ${TABLE}.poster_path ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="100%"> ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="100px"> ;;
   }
 
   dimension: production_companies {
