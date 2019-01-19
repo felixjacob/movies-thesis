@@ -17,7 +17,7 @@ explore: actors {
   from: cast
   sql_always_where: ${actor_name} IS NOT NULL ;;
   fields:
-  [ALL_FIELDS*, -actors.movie_id, -movies.imdb_id]
+  [ALL_FIELDS*, -actors.movie_id]
 #   [actors.cast*, actor_facts.total_movies_count,
 #     movies.movies*, genres.genres*, ratings_summary.ratings*]
   join: actor_facts {
@@ -46,6 +46,7 @@ explore: actors {
   }
 
   join: ratings_summary {
+    view_label: "Ratings"
     sql_on: ${actors.movie_id} = ${ratings_summary.movie_id} ;;
     type: inner
     relationship: many_to_many
