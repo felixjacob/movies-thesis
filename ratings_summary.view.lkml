@@ -15,7 +15,6 @@ view: ratings_summary {
     primary_key: yes
     hidden: yes
     type: number
-    sql: ${TABLE}.id ;;
   }
 
   dimension: movie_id {
@@ -31,12 +30,33 @@ view: ratings_summary {
     sql: ${TABLE}.rating_count ;;
   }
 
+  measure: rating_sumproduct{
+    type: sum
+    sql: ${TABLE}.rating * ${TABLE}.rating_count ;;
+  }
+
   measure: average_rating {
     type: number
-    sql: SUM(${TABLE}.rating * ${TABLE}.rating_count) / ${rating_count} ;;
+    value_format_name: decimal_1
+#     sql: SUM(${TABLE}.rating * ${TABLE}.rating_count) / SUM(${TABLE}.rating_count) ;;
+    sql: ${rating_sumproduct} / NULLIF(${rating_count}, 0) ;;
+    drill_fields:
+    [
+      movies.release_year,
+      movies.title,
+      movies.poster,
+      actors.character_name,
+      movies.overview,
+      average_rating
+    ]
   }
 
   set: ratings {
-    fields: [rating, rating_count, average_rating]
+    fields:
+    [
+      rating,
+      rating_count,
+      average_rating
+    ]
   }
 }
