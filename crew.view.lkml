@@ -14,15 +14,16 @@ view: crew {
             FROM movies_data.credits), UNNEST(crew_array) AS c),
       crew_formatted AS (
         SELECT DISTINCT
-          id                                                                 AS movie_id,
+          id                                                                      AS movie_id,
           --crew_json,
           --TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.credit_id'), '"', ''))     AS crew_id,
-          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))    AS department,
-          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))           AS job,
-          NULLIF(CAST(JSON_EXTRACT(crew_json, '$.gender') AS INT64), 0)      AS gender,
-          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))          AS name,
-          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', ''))  AS picture
-        FROM crew_details)
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))               AS name,
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))         AS department,
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))                AS job,
+          MAX(NULLIF(CAST(JSON_EXTRACT(crew_json, '$.gender') AS INT64), 0))      AS gender,
+          MAX(TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', '')))  AS picture
+        FROM crew_details
+        GROUP BY 1, 2, 3, 4)
 
     SELECT
       ROW_NUMBER() OVER () AS id,
@@ -69,13 +70,30 @@ view: crew {
   }
 
   dimension: name {
+    group_label: "Name"
     type: string
     sql: ${TABLE}.name ;;
   }
 
-  dimension: picture {
+  dimension: name_big {
+    group_label: "Name"
+    type: string
+    sql: ${name} ;;
+    html: <b><p style="font-size:60px">{{value}}</p></b> ;;
+  }
+
+  dimension: picture_big {
+    group_label: "Picture"
     type: string
     sql: ${TABLE}.picture ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{name._value}}" width="300px"> ;;
+  }
+
+  dimension: picture_small {
+    group_label: "Picture"
+    type: string
+    sql: ${TABLE}.picture ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{name._value}}" width="100px"> ;;
   }
 
   measure: count {
