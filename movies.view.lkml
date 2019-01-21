@@ -23,7 +23,10 @@ view: movies {
       status,
       tagline,
       title
-    FROM movies_data.movies_metadata ;;
+    FROM movies_data.movies_metadata
+    WHERE runtime BETWEEN 60 AND 240
+      AND genres <> '[]'
+    ;;
   }
 
   dimension: movie_id {
@@ -39,6 +42,7 @@ view: movies {
 
   dimension: budget {
     type: number
+    value_format_name: usd_0
     sql: ${TABLE}.budget ;;
   }
 
@@ -55,7 +59,7 @@ view: movies {
 
   dimension: original_language {
     type: string
-    sql: ${TABLE}.original_language ;;
+    sql: UPPER(${TABLE}.original_language) ;;
   }
 
   dimension: original_title {
@@ -69,9 +73,27 @@ view: movies {
   }
 
   dimension: poster {
+    group_label: "Poster"
     type: string
     sql: ${TABLE}.poster_path ;;
     html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="100px"> ;;
+  }
+
+  dimension: poster_big {
+    group_label: "Poster"
+    type: string
+    sql: ${poster} ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="200px"> ;;
+  }
+
+  dimension: poster_gross {
+    group_label: "Poster"
+    type: string
+    sql: ${poster} ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="170px">
+          <br>
+          <p style="font-size:40px">{{revenue._rendered_value}}</p>
+          ;;
   }
 
   dimension: production_companies {
@@ -101,12 +123,22 @@ view: movies {
 
   dimension: revenue {
     type: number
+    value_format_name: usd_0
     sql: ${TABLE}.revenue ;;
   }
 
   dimension: runtime {
+    group_label: "Runtime"
     type: number
     sql: ${TABLE}.runtime ;;
+  }
+
+  dimension: runtime_tiered {
+    group_label: "Runtime"
+    type: tier
+    style: integer
+    tiers: [60,75,90,105,120,135,150,165,180]
+    sql:  ${runtime} ;;
   }
 
   dimension: spoken_languages {
@@ -181,9 +213,12 @@ view: movies {
       original_title,
       overview,
       poster,
+      poster_big,
+      poster_gross,
       release*,
       revenue,
       runtime,
+      runtime_tiered,
       status,
       tagline,
       title,
