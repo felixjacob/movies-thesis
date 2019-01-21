@@ -64,23 +64,27 @@ view: cast {
   }
 
   dimension: actor_name {
+    group_label: "Actor Name"
     type: string
     sql: ${TABLE}.actor_name ;;
   }
 
   dimension: actor_name_big {
+    group_label: "Actor Name"
     type: string
     sql: ${actor_name} ;;
     html: <b><p style="font-size:60px">{{value}}</p></b> ;;
   }
 
   dimension: picture_big {
+    group_label: "Picture"
     type: string
     sql: ${TABLE}.picture ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="250px"> ;;
+    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="300px"> ;;
   }
 
   dimension: picture_small {
+    group_label: "Picture"
     type: string
     sql: ${TABLE}.picture ;;
     html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100px"> ;;
