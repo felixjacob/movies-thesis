@@ -7,7 +7,7 @@ view: ratings {
       ROW_NUMBER() OVER () AS id,
       b.tmdbId AS movieId,
       a.rating,
-      a.timestamp,
+      TIMESTAMP_SECONDS(a.timestamp) AS timestamp,
       a.userId
     FROM movies_data.ratings AS a
     JOIN movies_data.links AS b
@@ -33,8 +33,13 @@ view: ratings {
   }
 
   dimension: timestamp {
-    type: number
+    type: date_time
     sql: ${TABLE}.timestamp ;;
+  }
+
+  dimension: rating_year {
+    type: number
+    sql: EXTRACT(YEAR FROM ${TABLE}.timestamp) ;;
   }
 
   dimension: user_id {

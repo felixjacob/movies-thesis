@@ -5,6 +5,7 @@ view: ratings_summary {
       column: movie_id {}
       column: rating {}
       column: rating_count {field: ratings.count}
+      column: rating_year {}
       derived_column: id {
         sql: ROW_NUMBER() OVER () ;;
       }
@@ -22,6 +23,10 @@ view: ratings_summary {
   }
 
   dimension: rating {
+    type: number
+  }
+
+  dimension: rating_year {
     type: number
   }
 
