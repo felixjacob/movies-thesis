@@ -18,12 +18,12 @@ view: crew {
           --crew_json,
           --TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.credit_id'), '"', ''))     AS crew_id,
           TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))               AS name,
+          CAST(JSON_EXTRACT(crew_json, '$.id') AS INT64)                          AS person_id,
           TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))         AS department,
           TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.job'), '"', ''))                AS job,
-          MAX(NULLIF(CAST(JSON_EXTRACT(crew_json, '$.gender') AS INT64), 0))      AS gender,
-          MAX(TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', '')))  AS picture
-        FROM crew_details
-        GROUP BY 1, 2, 3, 4)
+          NULLIF(CAST(JSON_EXTRACT(crew_json, '$.gender') AS INT64), 0)           AS gender,
+          TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.profile_path'), '"', ''))       AS picture
+        FROM crew_details)
 
     SELECT
       ROW_NUMBER() OVER () AS id,
@@ -47,6 +47,11 @@ view: crew {
   dimension: movie_id {
     type: number
     sql: ${TABLE}.movie_id ;;
+  }
+
+  dimension: person_id {
+    type: number
+    sql: ${TABLE}.person_id ;;
   }
 
 #   dimension: crew_json {
@@ -96,7 +101,17 @@ view: crew {
     html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{name._value}}" width="100px"> ;;
   }
 
-  measure: count {
-    type: count
+  set: crew {
+    fields:
+    [
+      person_id,
+      name,
+      name_big,
+      gender,
+      job,
+      department,
+      picture_big,
+      picture_small
+    ]
   }
 }
