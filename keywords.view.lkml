@@ -51,4 +51,11 @@ view: keywords {
   measure: count {
     type: count
   }
+
+  set: keywords {
+    fields:
+    [
+      keyword
+    ]
+  }
 }
