@@ -25,12 +25,19 @@ explore: actors {
   [ALL_FIELDS*, -actors.movie_id]
 #   [actors.cast*, actor_facts.total_movies_count,
 #     movies.movies*, genres.genres*, ratings_summary.ratings*]
-  join: actor_facts {
+  join: actors_facts {
     view_label: "Actors"
-    sql_on: ${actors.actor_name} = ${actor_facts.actor_name} ;;
+    sql_on: ${actors.actor_id} = ${actors_facts.actor_id} ;;
     type: inner
-    relationship: one_to_one
-    fields: [actor_facts.total_movies_count]
+    relationship: many_to_one
+    fields: [actors_facts.total_movies_count]
+  }
+
+  join: actors_ranks_final {
+    view_label: "Ranks"
+    sql_on: ${actors.actor_id} = ${actors_ranks_final.actor_id} ;;
+    type: left_outer
+    relationship: many_to_one
   }
 
   join: movies {
@@ -110,9 +117,11 @@ explore: movies {
   AND ${genres.all_genres} NOT LIKE '%TV Movie%'
   AND ${movies.original_language} = 'EN' ;;
   join: genres {
+    view_label: "Movies"
     sql_on: ${movies.movie_id} = ${genres.movie_id} ;;
     type: inner
     relationship: one_to_many
+    fields: [genres.genres*]
   }
 
   # join: cast {
@@ -131,12 +140,15 @@ explore: movies {
     sql_on: ${movies.movie_id} = ${keywords.movie_id} ;;
     type: inner
     relationship: one_to_many
+    fields: [keywords.keywords*]
   }
 
   join: ratings_summary {
+    view_label: "Ratings"
     sql_on: ${movies.movie_id} = ${ratings_summary.movie_id} ;;
     type: inner
     relationship: one_to_many
+    fields: [ratings_summary.ratings*]
   }
 }
 
@@ -144,7 +156,9 @@ explore: movies {
 # HIDDEN EXPLORES (DEBUG)
 ###########################
 
-explore: actor_facts { hidden: yes }
+explore: actors_facts { hidden: yes }
+
+explore: actors_ranks { hidden: yes }
 
 explore: crew { hidden: yes }
 
