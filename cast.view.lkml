@@ -18,14 +18,16 @@ view: cast {
           --cast_json,
           --TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))          AS cast_id,
           TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))               AS actor_name,
-          MAX(NULLIF(CAST(JSON_EXTRACT(cast_json, '$.gender') AS INT64), 0))      AS gender,
-          MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.profile_path'), '"', '')))  AS picture,
-          MAX(TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', '')))     AS character_name
-        FROM cast_details
-        GROUP BY 1, 2)
+          CAST(JSON_EXTRACT(cast_json, '$.id') AS INT64)                          AS actor_id,
+          CAST(JSON_EXTRACT(cast_json, '$.order') AS INT64)                       AS cast_order,
+          NULLIF(CAST(JSON_EXTRACT(cast_json, '$.gender') AS INT64), 0)           AS gender,
+          TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.profile_path'), '"', ''))       AS picture,
+          TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.character'), '"', ''))          AS character_name
+        FROM cast_details)
 
     SELECT
       ROW_NUMBER() OVER () AS id,
+      IF(cast_order < 5, 'Main', 'Secondary') AS role_type,
       *
     FROM cast_formatted ;;
   }
@@ -43,6 +45,11 @@ view: cast {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: actor_id {
+    type: number
+    sql: ${TABLE}.actor_id ;;
+  }
+
   dimension: movie_id {
     type: number
     sql: ${TABLE}.movie_id ;;
@@ -52,6 +59,11 @@ view: cast {
 #     type: string
 #     sql: ${TABLE}.cast_json ;;
 #   }
+
+  dimension: cast_order {
+    type: number
+    sql: ${TABLE}.cast_order ;;
+  }
 
   dimension: character_name {
     type: string
@@ -67,6 +79,16 @@ view: cast {
     group_label: "Actor Name"
     type: string
     sql: ${TABLE}.actor_name ;;
+    link: {
+      label: "Link to TMDB"
+      url: "https://www.themoviedb.org/person/{{actor_id._value}}"
+      icon_url: "https://www.themoviedb.org/assets/1/v4/logos/208x226-stacked-green-9484383bd9853615c113f020def5cbe27f6d08a84ff834f41371f223ebad4a3c.png"
+    }
+    link: {
+      label: "Actors Dashboard"
+      url: "/dashboards/3?Name={{value}}&Id={{actor_id._value}}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: actor_name_big {
@@ -90,15 +112,55 @@ view: cast {
     html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100px"> ;;
   }
 
+  dimension: role_type {
+    type: string
+    sql: ${TABLE}.role_type ;;
+  }
+
+  measure: main_roles_count {
+    type: count_distinct
+    sql: ${id} ;;
+    filters: {
+      field: role_type
+      value: "Main"
+    }
+    drill_fields: [drill*]
+  }
+
+  measure: secondary_roles_count {
+    type: count_distinct
+    sql: ${id} ;;
+    filters: {
+      field: role_type
+      value: "Secondary"
+    }
+    drill_fields: [drill*]
+  }
+
+  set: drill {
+    fields: [
+      movies.release_year,
+      movies.title,
+      movies.poster,
+      character_name,
+      movies.overview,
+      genres.all_genres,
+      ratings_summary.average_rating
+    ]
+  }
+
   set: cast {
     fields:
     [
+      actor_id,
       actor_name,
       actor_name_big,
       gender,
       character_name,
       picture_big,
-      picture_small
+      picture_small,
+      main_roles_count,
+      secondary_roles_count
     ]
   }
 }
