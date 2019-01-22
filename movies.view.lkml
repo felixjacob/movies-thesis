@@ -167,7 +167,6 @@ view: movies {
     }
     link: {
       label: "Link to TMDB"
-#       url: "https://www.themoviedb.org/movie/{{links.tmdb_id._value}}"
       url: "https://www.themoviedb.org/movie/{{movie_id._value}}"
       icon_url: "https://www.themoviedb.org/assets/1/v4/logos/208x226-stacked-green-9484383bd9853615c113f020def5cbe27f6d08a84ff834f41371f223ebad4a3c.png"
     }
@@ -175,16 +174,22 @@ view: movies {
 
   measure: movies_count {
     type: count
-#     filters: {
-#       field: movies.status
-#       value: "Released"
-#     }
-    drill_fields:
-    [
+    drill_fields: [drill*]
+  }
+
+  measure: average_revenue {
+    type: average
+    value_format_name: usd_0
+    sql: ${revenue} ;;
+  }
+
+  set: drill {
+    fields: [
       release_year,
       title,
-      movies.poster,
+      poster,
       actors.character_name,
+      actors.role_type,
       overview,
       genres.all_genres,
       ratings_summary.average_rating
@@ -222,7 +227,8 @@ view: movies {
       status,
       tagline,
       title,
-      movies_count
+      movies_count,
+      average_revenue
     ]
   }
 }
