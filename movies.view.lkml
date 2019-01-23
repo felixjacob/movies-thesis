@@ -1,6 +1,4 @@
 view: movies {
-  # sql_table_name: movies_data.movies_metadata ;;
-
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
     sql:
@@ -170,6 +168,12 @@ view: movies {
       url: "https://www.themoviedb.org/movie/{{movie_id._value}}"
       icon_url: "https://www.themoviedb.org/assets/1/v4/logos/208x226-stacked-green-9484383bd9853615c113f020def5cbe27f6d08a84ff834f41371f223ebad4a3c.png"
     }
+  }
+
+  dimension: years_from_start_of_career {
+    # Relative to start of actor's career
+    type: number
+    sql: ${release_year} - ${actors_facts.first_movie_year} ;;
   }
 
   measure: movies_count {

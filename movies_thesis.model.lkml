@@ -9,9 +9,9 @@ datagroup: movies_thesis_default_datagroup {
 
 persist_with: movies_thesis_default_datagroup
 
-###########################
+####################################################################################################
 # ACTORS EXPLORE
-###########################
+####################################################################################################
 
 explore: actors {
   from: cast
@@ -21,10 +21,7 @@ explore: actors {
     AND ${genres.all_genres} NOT LIKE '%Documentary%'
     AND ${genres.all_genres} NOT LIKE '%TV Movie%'
     AND ${movies.original_language} = 'EN' ;;
-  fields:
-  [ALL_FIELDS*, -actors.movie_id]
-#   [actors.cast*, actor_facts.total_movies_count,
-#     movies.movies*, genres.genres*, ratings_summary.ratings*]
+  fields: [ALL_FIELDS*, -actors.movie_id]
   join: actors_facts {
     view_label: "Actors Facts"
     sql_on: ${actors.actor_id} = ${actors_facts.actor_id} ;;
@@ -43,11 +40,10 @@ explore: actors {
 
   join: movies {
     view_label: "Movies Details"
-#     sql_where: ${movies.status} = 'Released' ;;
     sql_on: ${actors.movie_id} = ${movies.movie_id} ;;
     type: inner
     relationship: many_to_one
-    fields: [movies.movies*]
+    fields: [movies.movies*, movies.years_from_start_of_career]
   }
 
   join: genres {
@@ -67,9 +63,9 @@ explore: actors {
   }
 }
 
-###########################
+####################################################################################################
 # DIRECTORS EXPLORE
-###########################
+####################################################################################################
 
 explore: directors {
   from: crew
@@ -79,11 +75,9 @@ explore: directors {
   AND ${genres.all_genres} NOT LIKE '%Documentary%'
   AND ${genres.all_genres} NOT LIKE '%TV Movie%'
   AND ${movies.original_language} = 'EN' ;;
-  fields:
-  [ALL_FIELDS*, -directors.movie_id]
+  fields: [ALL_FIELDS*, -directors.movie_id]
   join: movies {
     view_label: "Movies Details"
-#     sql_where: ${movies.status} = 'Released' ;;
     sql_on: ${directors.movie_id} = ${movies.movie_id} ;;
     type: inner
     relationship: many_to_one
@@ -107,9 +101,9 @@ explore: directors {
   }
 }
 
-###########################
+####################################################################################################
 # MOVIES EXPLORE
-###########################
+####################################################################################################
 
 explore: movies {
   sql_always_where:
@@ -117,6 +111,7 @@ explore: movies {
   AND ${genres.all_genres} NOT LIKE '%Documentary%'
   AND ${genres.all_genres} NOT LIKE '%TV Movie%'
   AND ${movies.original_language} = 'EN' ;;
+  fields: [ALL_FIELDS*, -movies.years_from_start_of_career]
   join: genres {
     view_label: "Movies"
     sql_on: ${movies.movie_id} = ${genres.movie_id} ;;
@@ -124,18 +119,6 @@ explore: movies {
     relationship: one_to_many
     fields: [genres.genres*]
   }
-
-  # join: cast {
-  #   sql_on: ${movies.movie_id} = ${cast.movie_id} ;;
-  #   type: inner
-  #   relationship: one_to_many
-  # }
-
-  # join: crew {
-  #   sql_on: ${movies.movie_id} = ${crew.movie_id} ;;
-  #   type: inner
-  #   relationship: one_to_many
-  # }
 
   join: keywords {
     sql_on: ${movies.movie_id} = ${keywords.movie_id} ;;
