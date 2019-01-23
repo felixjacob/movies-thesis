@@ -16,7 +16,6 @@ view: cast {
         SELECT DISTINCT
           id                                                                      AS movie_id,
           --cast_json,
-          --TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.credit_id'), '"', ''))          AS cast_id,
           TRIM(REPLACE(JSON_EXTRACT(cast_json, '$.name'), '"', ''))               AS actor_name,
           CAST(JSON_EXTRACT(cast_json, '$.id') AS INT64)                          AS actor_id,
           CAST(JSON_EXTRACT(cast_json, '$.order') AS INT64)                       AS cast_order,
@@ -31,12 +30,6 @@ view: cast {
       *
     FROM cast_formatted ;;
   }
-
-#   dimension: cast_id {
-#     primary_key: yes
-#     type: string
-#     sql: ${TABLE}.cast_id;;
-#   }
 
   dimension: id {
     primary_key: yes
@@ -66,6 +59,7 @@ view: cast {
   }
 
   dimension: character_name {
+    view_label: "Character"
     type: string
     sql: ${TABLE}.character_name ;;
   }
@@ -113,11 +107,13 @@ view: cast {
   }
 
   dimension: role_type {
+    view_label: "Character"
     type: string
     sql: ${TABLE}.role_type ;;
   }
 
   dimension: is_voice {
+    view_label: "Character"
     type: yesno
     sql: LOWER(${character_name}) LIKE '%voice%' ;;
   }
@@ -146,20 +142,20 @@ view: cast {
     hidden: yes
     type: min
     sql: ${movies.release_year} ;;
-    filters: {
-      field: role_type
-      value: "Main"
-    }
+#     filters: {
+#       field: role_type
+#       value: "Main"
+#     }
   }
 
   measure: last_movie_year {
     hidden: yes
     type: max
     sql: ${movies.release_year} ;;
-    filters: {
-      field: role_type
-      value: "Main"
-    }
+#     filters: {
+#       field: role_type
+#       value: "Main"
+#     }
   }
 
   set: drill {
