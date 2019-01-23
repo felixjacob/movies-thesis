@@ -20,12 +20,12 @@ view: actors_facts {
   }
 
   dimension: first_movie_year {
-    description: "Based on Main Roles only"
+#     description: "Based on Main Roles only"
     type: number
   }
 
   dimension: last_movie_year {
-    description: "Based on Main Roles only"
+#     description: "Based on Main Roles only"
     type: number
   }
 
@@ -38,15 +38,15 @@ view: actors_facts {
   }
 
   dimension: career_length {
-    description: "Based on Main Roles only"
+#     description: "Based on Main Roles only"
     type: number
     sql: ${last_movie_year} - ${first_movie_year} + 1 ;;
   }
 
   dimension: average_main_roles_by_year {
     description: "Average number of Main Roles by year of career"
-    value_format_name: decimal_1
     type: number
+    value_format_name: decimal_1
     sql: ${total_main_roles_count} / ${career_length} ;;
   }
 
