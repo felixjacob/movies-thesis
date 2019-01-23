@@ -40,25 +40,16 @@ view: ratings_summary {
   measure: rating_count {
     type: sum
     sql: ${TABLE}.rating_count ;;
-    # filters: {
-    #   field: actors.role_type
-    #   value: "Main"
-    # }
   }
 
   measure: rating_sumproduct{
     type: sum
     sql: ${TABLE}.rating * ${TABLE}.rating_count ;;
-    # filters: {
-    #   field: actors.role_type
-    #   value: "Main"
-    # }
   }
 
   measure: average_rating {
     type: number
     value_format_name: decimal_1
-#     sql: SUM(${TABLE}.rating * ${TABLE}.rating_count) / SUM(${TABLE}.rating_count) ;;
     sql: ${rating_sumproduct} / NULLIF(${rating_count}, 0) ;;
     drill_fields: [drill*]
   }
@@ -83,6 +74,7 @@ view: ratings_summary {
       rating_year,
       total_ratings,
       rating_count,
+      rating_sumproduct,
       average_rating
     ]
   }
