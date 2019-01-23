@@ -117,6 +117,11 @@ view: cast {
     sql: ${TABLE}.role_type ;;
   }
 
+  dimension: is_voice {
+    type: yesno
+    sql: LOWER(${character_name}) LIKE '%voice%' ;;
+  }
+
   measure: main_roles_count {
     type: count_distinct
     sql: ${id} ;;
@@ -135,6 +140,26 @@ view: cast {
       value: "Secondary"
     }
     drill_fields: [drill*]
+  }
+
+  measure: first_movie_year {
+    hidden: yes
+    type: min
+    sql: ${movies.release_year} ;;
+    filters: {
+      field: role_type
+      value: "Main"
+    }
+  }
+
+  measure: last_movie_year {
+    hidden: yes
+    type: max
+    sql: ${movies.release_year} ;;
+    filters: {
+      field: role_type
+      value: "Main"
+    }
   }
 
   set: drill {
