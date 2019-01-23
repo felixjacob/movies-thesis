@@ -15,8 +15,7 @@ view: keywords {
     SELECT DISTINCT
       ROW_NUMBER() OVER () AS id,
       id                   AS movie_id,
-      keyword_json,
-      --LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.id'), '"', ''))) AS keyword_id,
+      --keyword_json,
       LOWER(TRIM(REPLACE(JSON_EXTRACT(keyword_json, '$.name'), '"', ''))) AS keyword
     FROM keywords ;;
   }
@@ -32,11 +31,6 @@ view: keywords {
     type: number
     sql: ${TABLE}.movie_id ;;
   }
-
-#   dimension: keyword_id {
-#     type: number
-#     sql: ${TABLE}.keyword_id ;;
-#   }
 
 #   dimension: keyword_json {
 #     type: string

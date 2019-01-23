@@ -16,7 +16,6 @@ view: crew {
         SELECT DISTINCT
           id                                                                      AS movie_id,
           --crew_json,
-          --TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.credit_id'), '"', ''))     AS crew_id,
           TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.name'), '"', ''))               AS name,
           CAST(JSON_EXTRACT(crew_json, '$.id') AS INT64)                          AS person_id,
           TRIM(REPLACE(JSON_EXTRACT(crew_json, '$.department'), '"', ''))         AS department,
@@ -30,12 +29,6 @@ view: crew {
       *
     FROM crew_formatted ;;
   }
-
-#   dimension: crew_id {
-#     primary_key: yes
-#     type: string
-#     sql: ${TABLE}.crew_id;;
-#   }
 
   dimension: id {
     primary_key: yes
