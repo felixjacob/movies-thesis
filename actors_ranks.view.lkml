@@ -131,4 +131,14 @@ view: actors_ranks_final {
   dimension: actor_rank {
     type: number
   }
+
+  set: ranks {
+    fields:
+    [
+      total_movies_rank,
+      rating_rank,
+      revenue_rank,
+      actor_rank
+    ]
+  }
 }
