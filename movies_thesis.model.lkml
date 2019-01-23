@@ -26,11 +26,11 @@ explore: actors {
 #   [actors.cast*, actor_facts.total_movies_count,
 #     movies.movies*, genres.genres*, ratings_summary.ratings*]
   join: actors_facts {
-    view_label: "Actors"
+    view_label: "Actors Facts"
     sql_on: ${actors.actor_id} = ${actors_facts.actor_id} ;;
     type: inner
     relationship: many_to_one
-    fields: [actors_facts.total_movies_count]
+    fields: [actors_facts.facts*]
   }
 
   join: actors_ranks_final {
@@ -38,6 +38,7 @@ explore: actors {
     sql_on: ${actors.actor_id} = ${actors_ranks_final.actor_id} ;;
     type: left_outer
     relationship: many_to_one
+    fields: [actors_ranks_final.ranks*]
   }
 
   join: movies {
