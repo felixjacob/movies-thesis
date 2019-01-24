@@ -148,6 +148,40 @@ explore: crew { hidden: yes }
 
 explore: genres { hidden: yes }
 
+explore: genres_join {
+  hidden: yes
+  from: genres
+  sql_always_where:
+  ${movies.status} = 'Released'
+  AND ${genres_join.all_genres} NOT LIKE '%Documentary%'
+  AND ${genres_join.all_genres} NOT LIKE '%TV Movie%'
+  AND ${movies.original_language} = 'EN' ;;
+  fields: [genres_join.movie_id, genres_join.all_genres, genre1.genre, genre2.genre]
+  join: genre1 {
+    from: unique_genres
+    type: cross
+    relationship: many_to_many
+    fields: [genre1.genre]
+  }
+
+  join: genre2 {
+    from: unique_genres
+    type: cross
+    relationship: many_to_many
+    fields: [genre2.genre]
+  }
+
+  join: movies {
+    view_label: "Movies Details"
+    sql_on: ${genres_join.movie_id} = ${movies.movie_id} ;;
+    type: inner
+    relationship: many_to_one
+    fields: [movies.original_language, movies.status]
+  }
+}
+
+explore: genres_overlaps {}
+
 explore: keywords { hidden: yes }
 
 explore: links { hidden: yes }

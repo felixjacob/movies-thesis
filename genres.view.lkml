@@ -75,3 +75,62 @@ view: genres {
     ]
   }
 }
+
+####################################################################################################
+
+view: unique_genres {
+  derived_table: {
+    explore_source: genres {
+      column: genre {}
+    }
+  }
+
+  dimension: genre {}
+}
+
+####################################################################################################
+
+view: genres_overlaps {
+  derived_table: {
+    explore_source: genres_join {
+      column: all_genres {}
+      column: movie_id {}
+      column: genre1 { field: genre2.genre }
+      column: genre2 { field: genre1.genre }
+      filters: {
+        field: genre1.genre
+        value: "-NULL, -EMPTY"
+      }
+      filters: {
+        field: genre2.genre
+        value: "-NULL, -EMPTY"
+      }
+    }
+  }
+
+  dimension: all_genres {}
+
+  dimension: movie_id {
+    type: number
+  }
+
+  dimension: genre1 {
+    type: string
+  }
+
+  dimension: genre2 {
+    type: string
+  }
+
+  dimension: contains_both_genres {
+    type: yesno
+    sql: IF(${all_genres} LIKE CONCAT('%', genre1, '%')
+    AND ${all_genres} LIKE CONCAT('%', genre2, '%')
+    AND ${genre1} <> ${genre2}, TRUE, FALSE) ;;
+  }
+
+  measure: count {
+    type: sum
+    sql: IF(${contains_both_genres}, 1, 0) ;;
+  }
+}
