@@ -1,3 +1,5 @@
+include: "movies_thesis.model.lkml"
+
 view: actors_ranks {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
@@ -6,14 +8,23 @@ view: actors_ranks {
       column: total_movies_count { field: movies.movies_count }
       column: average_rating { field: ratings_summary.average_rating }
       column: average_revenue { field: movies.average_revenue }
-      derived_column: total_movies_rank {
+      derived_column: total_movies_rank_desc {
         sql: RANK() OVER (ORDER BY total_movies_count DESC) ;;
       }
-      derived_column: rating_rank {
+      derived_column: total_movies_rank_asc {
+        sql: RANK() OVER (ORDER BY total_movies_count ASC) ;;
+      }
+      derived_column: rating_rank_desc {
         sql: RANK() OVER (ORDER BY average_rating DESC) ;;
       }
-      derived_column: revenue_rank {
+      derived_column: rating_rank_asc {
+        sql: RANK() OVER (ORDER BY average_rating ASC) ;;
+      }
+      derived_column: revenue_rank_desc {
         sql: RANK() OVER (ORDER BY average_revenue DESC) ;;
+      }
+      derived_column: revenue_rank_asc{
+        sql: RANK() OVER (ORDER BY average_revenue ASC) ;;
       }
       filters: {
         field: actors.role_type
@@ -30,6 +41,39 @@ view: actors_ranks {
     }
   }
 
+#   parameter: total_movies_rank_order {
+#     type: unquoted
+#     default_value: "Descending"
+#     allowed_value: {
+#       value: "Ascending"
+#     }
+#     allowed_value: {
+#       value: "Descending"
+#     }
+#   }
+#
+#   parameter: average_rating_rank_order {
+#     type: unquoted
+#     default_value: "Descending"
+#     allowed_value: {
+#       value: "Ascending"
+#     }
+#     allowed_value: {
+#       value: "Descending"
+#     }
+#   }
+#
+#   parameter: average_revenue_rank_order {
+#     type: unquoted
+#     default_value: "Descending"
+#     allowed_value: {
+#       value: "Ascending"
+#     }
+#     allowed_value: {
+#       value: "Descending"
+#     }
+#   }
+
   dimension: actor_id {
     primary_key: yes
     type: number
@@ -49,27 +93,46 @@ view: actors_ranks {
     type: number
   }
 
-  dimension: total_movies_rank {
+  dimension: total_movies_rank_desc {
     type: number
   }
 
-  dimension: rating_rank {
+  dimension: total_movies_rank_asc {
     type: number
   }
 
-  dimension: revenue_rank {
+  dimension: rating_rank_desc {
     type: number
   }
 
-  dimension: overall_rank_sum {
+  dimension: rating_rank_asc {
     type: number
-    sql: ${total_movies_rank} + ${rating_rank} + ${revenue_rank} ;;
   }
 
-  dimension: overall_rank_sum_inverted {
+  dimension: revenue_rank_desc {
     type: number
-    sql: 1 / ${overall_rank_sum} ;;
   }
+
+  dimension: revenue_rank_asc {
+    type: number
+  }
+
+#   dimension: overall_rank_sum {
+#     type: number
+#     sql:
+#     {% if total_movies_rank_order._parameter_value == 'Ascending' %} ${total_movies_rank_asc}
+#     {% else %} ${total_movies_rank_desc} {% endif %}
+#     {% if average_rating_rank_order._parameter_value == 'Ascending' %} + ${rating_rank_asc}
+#     {% else %} + ${rating_rank_desc} {% endif %}
+#     {% if average_revenue_rank_order._parameter_value == 'Ascending' %} + ${revenue_rank_asc}
+#     {% else %} + ${revenue_rank_desc} {% endif %}
+#     ;;
+#   }
+#
+#   dimension: overall_rank_sum_inverted {
+#     type: number
+#     sql: 1 / ${overall_rank_sum} ;;
+#   }
 }
 
 
@@ -82,16 +145,78 @@ view: actors_ranks_final {
       column: average_rating {}
       column: average_revenue {}
       column: total_movies_count {}
-      column: rating_rank {}
-      column: revenue_rank {}
-      column: total_movies_rank {}
-      column: overall_rank_sum {}
-      column: overall_rank_sum_inverted {}
+      column: total_movies_rank_desc {}
+      column: total_movies_rank_asc {}
+      column: rating_rank_desc {}
+      column: rating_rank_asc {}
+      column: revenue_rank_desc {}
+      column: revenue_rank_asc {}
       derived_column: actor_rank {
-        sql: RANK() OVER (ORDER BY overall_rank_sum_inverted DESC) ;;
+        sql: RANK() OVER (ORDER BY
+          (1 / NULLIF(
+            IFNULL((1 / NULLIF({% parameter total_movies_weight %}, 0)) *
+            {% if actors_ranks_final.total_movies_rank_order._parameter_value == 'Ascending' %} total_movies_rank_asc
+            {% else %} total_movies_rank_desc {% endif %}, 0)
+            + IFNULL((1 / NULLIF({% parameter average_rating_weight %}, 0)) *
+            {% if actors_ranks_final.average_rating_rank_order._parameter_value == 'Ascending' %} rating_rank_asc
+            {% else %} + rating_rank_desc {% endif %}, 0)
+            + IFNULL((1 / NULLIF({% parameter average_revenue_weight %}, 0)) *
+            {% if actors_ranks_final.average_revenue_rank_order._parameter_value == 'Ascending' %} revenue_rank_asc
+            {% else %} + revenue_rank_desc {% endif %}, 0)
+          , 0)
+          ) DESC);;
       }
     }
   }
+
+  parameter: total_movies_rank_order {
+    type: unquoted
+    default_value: "Descending"
+    allowed_value: {
+      value: "Ascending"
+    }
+    allowed_value: {
+      value: "Descending"
+    }
+  }
+
+  parameter: total_movies_weight {
+    type: number
+    default_value: "1"
+  }
+
+  parameter: average_rating_rank_order {
+    type: unquoted
+    default_value: "Descending"
+    allowed_value: {
+      value: "Ascending"
+    }
+    allowed_value: {
+      value: "Descending"
+    }
+  }
+
+  parameter: average_rating_weight {
+    type: number
+    default_value: "1"
+  }
+
+  parameter: average_revenue_rank_order {
+    type: unquoted
+    default_value: "Descending"
+    allowed_value: {
+      value: "Ascending"
+    }
+    allowed_value: {
+      value: "Descending"
+    }
+  }
+
+  parameter: average_revenue_weight {
+    type: number
+    default_value: "1"
+  }
+
   dimension: actor_id {
     primary_key: yes
     type: number
@@ -111,23 +236,27 @@ view: actors_ranks_final {
     type: number
   }
 
-  dimension: total_movies_rank {
+  dimension: total_movies_rank_desc {
     type: number
   }
 
-  dimension: rating_rank {
+  dimension: total_movies_rank_asc {
     type: number
   }
 
-  dimension: revenue_rank {
+  dimension: rating_rank_desc {
     type: number
   }
 
-  dimension: overall_rank_sum {
+  dimension: rating_rank_asc {
     type: number
   }
 
-  dimension: overall_rank_sum_inverted {
+  dimension: revenue_rank_desc {
+    type: number
+  }
+
+  dimension: revenue_rank_asc {
     type: number
   }
 
@@ -138,9 +267,12 @@ view: actors_ranks_final {
   set: ranks {
     fields:
     [
-      total_movies_rank,
-      rating_rank,
-      revenue_rank,
+      total_movies_rank_order,
+      total_movies_weight,
+      average_rating_rank_order,
+      average_rating_weight,
+      average_revenue_rank_order,
+      average_revenue_weight,
       actor_rank
     ]
   }
