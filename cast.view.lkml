@@ -80,7 +80,7 @@ view: cast {
     }
     link: {
       label: "Actors Dashboard"
-      url: "/dashboards/3?Name={{value}}&Id={{actor_id._value}}"
+      url: "/dashboards/3?Id={{actor_id._value}}"
       icon_url: "https://looker.com/favicon.ico"
     }
   }
@@ -142,20 +142,12 @@ view: cast {
     hidden: yes
     type: min
     sql: ${movies.release_year} ;;
-#     filters: {
-#       field: role_type
-#       value: "Main"
-#     }
   }
 
   measure: last_movie_year {
     hidden: yes
     type: max
     sql: ${movies.release_year} ;;
-#     filters: {
-#       field: role_type
-#       value: "Main"
-#     }
   }
 
   set: drill {
