@@ -20,6 +20,7 @@ explore: actors {
     AND ${movies.status} = 'Released'
     AND ${genres.all_genres} NOT LIKE '%Documentary%'
     AND ${genres.all_genres} NOT LIKE '%TV Movie%'
+    AND ${genres.all_genres} NOT LIKE '%Foreign%'
     AND ${movies.original_language} = 'EN' ;;
   fields: [ALL_FIELDS*, -actors.movie_id]
   join: actors_facts {
@@ -74,6 +75,7 @@ explore: directors {
   AND ${movies.status} = 'Released'
   AND ${genres.all_genres} NOT LIKE '%Documentary%'
   AND ${genres.all_genres} NOT LIKE '%TV Movie%'
+  AND ${genres.all_genres} NOT LIKE '%Foreign%'
   AND ${movies.original_language} = 'EN' ;;
   fields: [ALL_FIELDS*, -directors.movie_id]
   join: movies {
@@ -110,6 +112,7 @@ explore: movies {
   ${movies.status} = 'Released'
   AND ${genres.all_genres} NOT LIKE '%Documentary%'
   AND ${genres.all_genres} NOT LIKE '%TV Movie%'
+  AND ${genres.all_genres} NOT LIKE '%Foreign%'
   AND ${movies.original_language} = 'EN' ;;
   fields: [ALL_FIELDS*, -movies.years_from_start_of_career]
   join: genres {
@@ -136,15 +139,9 @@ explore: movies {
   }
 }
 
-###########################
-# HIDDEN EXPLORES (DEBUG)
-###########################
-
-explore: actors_facts { hidden: yes }
-
-explore: actors_ranks { hidden: yes }
-
-explore: crew { hidden: yes }
+####################################################################################################
+# GENRES OVERLAP EXPLORE
+####################################################################################################
 
 explore: genres { hidden: yes }
 
@@ -155,6 +152,7 @@ explore: genres_join {
   ${movies.status} = 'Released'
   AND ${genres_join.all_genres} NOT LIKE '%Documentary%'
   AND ${genres_join.all_genres} NOT LIKE '%TV Movie%'
+  AND ${genres_join.all_genres} NOT LIKE '%Foreign%'
   AND ${movies.original_language} = 'EN' ;;
   fields: [genres_join.movie_id, genres_join.all_genres, genre1.genre, genre2.genre]
   join: genre1 {
@@ -182,10 +180,22 @@ explore: genres_join {
 
 explore: genres_overlaps {}
 
-explore: keywords { hidden: yes }
+####################################################################################################
+# OTHER EXPLORES
+####################################################################################################
 
-explore: links { hidden: yes }
+# explore: actors_facts { hidden: yes }
+
+explore: actors_ranks { hidden: yes }
+
+explore: actors_ranks_final { hidden: yes }
+
+# explore: crew { hidden: yes }
+
+# explore: keywords { hidden: yes }
+
+# explore: links { hidden: yes }
 
 explore: ratings { hidden: yes }
 
-explore: ratings_summary { hidden: yes }
+# explore: ratings_summary { hidden: yes }
