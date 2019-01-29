@@ -130,7 +130,21 @@ view: genres_overlaps {
   }
 
   measure: count {
-    type: sum
-    sql: IF(${contains_both_genres}, 1, 0) ;;
+    type: count
+    filters: {
+      field: contains_both_genres
+      value: "Yes"
+    }
+    drill_fields: [drill*]
+  }
+
+  set: drill {
+    fields: [
+      movies.release_year,
+      movies.title,
+      movies.poster,
+      movies.overview,
+      all_genres
+    ]
   }
 }
