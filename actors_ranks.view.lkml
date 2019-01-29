@@ -264,6 +264,12 @@ view: actors_ranks_final {
     type: number
   }
 
+  dimension: actor_rank_medium {
+    type: number
+    sql: ${actor_rank} ;;
+    html: <center><b><font size="5px">{{value}}</font></b></center> ;;
+  }
+
   set: ranks {
     fields:
     [
@@ -273,7 +279,8 @@ view: actors_ranks_final {
       average_rating_weight,
       average_revenue_rank_order,
       average_revenue_weight,
-      actor_rank
+      actor_rank,
+      actor_rank_medium
     ]
   }
 }

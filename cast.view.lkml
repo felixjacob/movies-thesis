@@ -65,8 +65,13 @@ view: cast {
   }
 
   dimension: gender {
-    type: number
-    sql: ${TABLE}.gender ;;
+    type: string
+    sql:
+    CASE
+      WHEN ${TABLE}.gender = 1 THEN 'Female'
+      WHEN ${TABLE}.gender = 2 THEN 'Male'
+      ELSE NULL
+    END ;;
   }
 
   dimension: actor_name {
@@ -80,9 +85,16 @@ view: cast {
     }
     link: {
       label: "Actors Dashboard"
-      url: "/dashboards/3?Id={{actor_id._value}}"
+      url: "/dashboards/movies_thesis::actors_dashboard?Id={{actor_id._value}}"
       icon_url: "https://looker.com/favicon.ico"
     }
+  }
+
+  dimension: actor_name_medium {
+    group_label: "Actor Name"
+    type: string
+    sql: ${actor_name} ;;
+    html: <center><b><font size="5px"><a href="/dashboards/movies_thesis::actors_dashboard?Id={{actor_id._value}}">{{value}}</a></font></b></center> ;;
   }
 
   dimension: actor_name_big {
@@ -96,14 +108,14 @@ view: cast {
     group_label: "Picture"
     type: string
     sql: ${TABLE}.picture ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="300px"> ;;
+    html: <center><img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="300px" align="middle"></center> ;;
   }
 
   dimension: picture_small {
     group_label: "Picture"
     type: string
     sql: ${TABLE}.picture ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100px"> ;;
+    html: <center><img src="https://image.tmdb.org/t/p/w1280/{{value}}" alt="{{actor_name._value}}" width="100px" align="middle"></center> ;;
   }
 
   dimension: role_type {
@@ -116,6 +128,12 @@ view: cast {
     view_label: "Character"
     type: yesno
     sql: LOWER(${character_name}) LIKE '%voice%' ;;
+  }
+
+  measure: roles_count {
+    type: count_distinct
+    sql: ${id} ;;
+    drill_fields: [drill*]
   }
 
   measure: main_roles_count {
