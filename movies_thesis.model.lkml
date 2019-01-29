@@ -2,6 +2,7 @@ connection: "thesis_bq"
 
 # include all the views
 include: "*.view"
+include: "*.dashboard"
 
 datagroup: movies_thesis_default_datagroup {
   sql_trigger: SELECT MAX(id) FROM movies_data.movies_metadata ;;
@@ -20,7 +21,6 @@ explore: actors {
     AND ${movies.status} = 'Released'
     AND ${genres.all_genres} NOT LIKE '%Documentary%'
     AND ${genres.all_genres} NOT LIKE '%TV Movie%'
-    --AND ${genres.all_genres} NOT LIKE '%Foreign%'
     AND ${movies.original_language} = 'EN' ;;
   fields: [ALL_FIELDS*, -actors.movie_id]
   join: actors_facts {
@@ -75,7 +75,6 @@ explore: directors {
   AND ${movies.status} = 'Released'
   AND ${genres.all_genres} NOT LIKE '%Documentary%'
   AND ${genres.all_genres} NOT LIKE '%TV Movie%'
-  --AND ${genres.all_genres} NOT LIKE '%Foreign%'
   AND ${movies.original_language} = 'EN' ;;
   fields: [ALL_FIELDS*, -directors.movie_id]
   join: movies {
@@ -112,7 +111,6 @@ explore: movies {
   ${movies.status} = 'Released'
   AND ${genres.all_genres} NOT LIKE '%Documentary%'
   AND ${genres.all_genres} NOT LIKE '%TV Movie%'
-  --AND ${genres.all_genres} NOT LIKE '%Foreign%'
   AND ${movies.original_language} = 'EN' ;;
   fields: [ALL_FIELDS*, -movies.years_from_start_of_career]
   join: genres {
@@ -149,11 +147,8 @@ explore: genres_join {
   hidden: yes
   from: genres
   sql_always_where:
-  ${movies.status} = 'Released'
-  AND ${genres_join.all_genres} NOT LIKE '%Documentary%'
-  AND ${genres_join.all_genres} NOT LIKE '%TV Movie%'
-  --AND ${genres_join.all_genres} NOT LIKE '%Foreign%'
-  AND ${movies.original_language} = 'EN' ;;
+  ${genres_join.all_genres} NOT LIKE '%Documentary%'
+  AND ${genres_join.all_genres} NOT LIKE '%TV Movie%' ;;
   fields: [genres_join.movie_id, genres_join.all_genres, genre1.genre, genre2.genre]
   join: genre1 {
     from: unique_genres
@@ -168,17 +163,22 @@ explore: genres_join {
     relationship: many_to_many
     fields: [genre2.genre]
   }
-
-  join: movies {
-    view_label: "Movies Details"
-    sql_on: ${genres_join.movie_id} = ${movies.movie_id} ;;
-    type: inner
-    relationship: many_to_one
-    fields: [movies.original_language, movies.status]
-  }
 }
 
-explore: genres_overlaps {}
+explore: genres_overlaps {
+  sql_always_where:
+  ${movies.status} = 'Released'
+  AND ${movies.original_language} = 'EN' ;;
+  fields: [ALL_FIELDS*, -genres_overlaps.movie_id]
+  join: movies {
+    view_label: "Movies Details"
+    sql_on: ${genres_overlaps.movie_id} = ${movies.movie_id} ;;
+    type: inner
+    relationship: many_to_one
+    # fields: [movies.original_language, movies.status]
+    fields: [movies.movies*]
+  }
+}
 
 ####################################################################################################
 # OTHER EXPLORES
