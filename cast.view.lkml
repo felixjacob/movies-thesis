@@ -94,7 +94,11 @@ view: cast {
     group_label: "Actor Name"
     type: string
     sql: ${actor_name} ;;
-    html: <center><b><font size="5px"><a href="/dashboards/movies_thesis::actors_dashboard?Id={{actor_id._value}}">{{value}}</a></font></b></center> ;;
+    html: <center>
+            <b><font size="5px">
+                <a href="/dashboards/movies_thesis::actors_dashboard?Id={{actor_id._value}}" target="_blank">{{value}}</a>
+            </font></b>
+          </center> ;;
   }
 
   dimension: actor_name_big {
@@ -128,6 +132,11 @@ view: cast {
     view_label: "Character"
     type: yesno
     sql: LOWER(${character_name}) LIKE '%voice%' ;;
+  }
+
+  measure: actors_count {
+    type: count_distinct
+    sql: ${actor_id} ;;
   }
 
   measure: roles_count {
@@ -190,6 +199,8 @@ view: cast {
       character_name,
       picture_big,
       picture_small,
+      actors_count,
+      roles_count,
       main_roles_count,
       secondary_roles_count
     ]
