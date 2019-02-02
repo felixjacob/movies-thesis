@@ -140,7 +140,7 @@
     type: single_value
     fields:
     - movies.revenue
-    - movies.poster_gross
+    - movies.poster_revenue
     sorts:
     - movies.revenue desc
     limit: 1

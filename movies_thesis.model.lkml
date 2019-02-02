@@ -5,7 +5,7 @@ include: "*.view"
 include: "*.dashboard"
 
 datagroup: movies_thesis_default_datagroup {
-  sql_trigger: SELECT MAX(id) FROM movies_data.movies_metadata ;;
+  sql_trigger: SELECT 1 ;;
 }
 
 persist_with: movies_thesis_default_datagroup
