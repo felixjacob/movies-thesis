@@ -5,7 +5,8 @@ view: movies {
     SELECT DISTINCT
       id AS movie_id,
       belongs_to_collection,
-      NULLIF(budget, 0) AS budget,
+      --NULLIF(budget, 0) AS budget,
+      IF(budget <= 1, NULL, budget) AS budget,
       homepage,
       imdb_id,
       original_language,
@@ -15,7 +16,8 @@ view: movies {
       production_companies,
       production_countries,
       release_date,
-      NULLIF(revenue, 0) AS revenue,
+      --NULLIF(revenue, 0) AS revenue,
+      IF(revenue <= 1, NULL, revenue) AS revenue,
       runtime,
       spoken_languages,
       status,
@@ -74,23 +76,45 @@ view: movies {
     group_label: "Poster"
     type: string
     sql: ${TABLE}.poster_path ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="100px"> ;;
+    html: <center>
+            <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="100px" align="middle">
+          </center> ;;
   }
 
   dimension: poster_big {
     group_label: "Poster"
     type: string
     sql: ${poster} ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="200px"> ;;
+    html: <center>
+            <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="200px" align="middle">
+          </center> ;;
   }
 
-  dimension: poster_gross {
+  dimension: poster_revenue {
     group_label: "Poster"
     type: string
     sql: ${poster} ;;
-    html: <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="170px">
-          <br>
-          <p style="font-size:40px">{{revenue._rendered_value}}</p>
+    html: <center>
+            <a href="https://www.themoviedb.org/movie/{{movie_id._value}}" target="_blank">
+              <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="170px">
+            </a>
+            <br>
+            <p style="font-size:40px">{{revenue._rendered_value}}</p>
+          </center>
+          ;;
+  }
+
+  dimension: poster_budget {
+    group_label: "Poster"
+    type: string
+    sql: ${poster} ;;
+    html: <center>
+            <a href="https://www.themoviedb.org/movie/{{movie_id._value}}" target="_blank">
+              <img src="https://image.tmdb.org/t/p/w1280{{value}}" alt="{{title._value}}" width="170px">
+            </a>
+            <br>
+            <p style="font-size:40px">{{budget._rendered_value}}</p>
+          </center>
           ;;
   }
 
@@ -223,7 +247,8 @@ view: movies {
       overview,
       poster,
       poster_big,
-      poster_gross,
+      poster_revenue,
+      poster_budget,
       release*,
       revenue,
       runtime,
