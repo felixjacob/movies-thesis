@@ -1,6 +1,4 @@
 view: ratings {
-#   sql_table_name: movies_data.ratings ;;
-
   derived_table: {
     sql:
     SELECT

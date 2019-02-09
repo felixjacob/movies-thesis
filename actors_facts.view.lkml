@@ -20,12 +20,10 @@ view: actors_facts {
   }
 
   dimension: first_movie_year {
-#     description: "Based on Main Roles only"
     type: number
   }
 
   dimension: last_movie_year {
-#     description: "Based on Main Roles only"
     type: number
   }
 
@@ -38,7 +36,6 @@ view: actors_facts {
   }
 
   dimension: career_length {
-#     description: "Based on Main Roles only"
     type: number
     sql: ${last_movie_year} - ${first_movie_year} + 1 ;;
   }
