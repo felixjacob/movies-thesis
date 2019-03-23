@@ -1,12 +1,12 @@
 view: actors_facts {
   derived_table: {
     explore_source: actors {
-      column: actor_id {}
+      column: actor_id { field: people.actor_id }
       column: total_movies_count { field: movies.movies_count }
-      column: first_movie_year {}
-      column: last_movie_year {}
-      column: total_main_roles_count { field: actors.main_roles_count }
-      column: total_secondary_roles_count { field: actors.secondary_roles_count }
+      column: first_movie_year { field: people.first_movie_year }
+      column: last_movie_year { field: people.last_movie_year }
+      column: total_main_roles_count { field: people.main_roles_count }
+      column: total_secondary_roles_count { field: people.secondary_roles_count }
     }
   }
 

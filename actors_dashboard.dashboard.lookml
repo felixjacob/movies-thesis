@@ -8,9 +8,9 @@
     explore: actors
     type: single_value
     fields:
-    - actors.actor_name_big
+    - people.actor_name_big
     sorts:
-    - actors.actor_name_big
+    - people.actor_name_big
     limit: 1
     custom_color_enabled: false
     custom_color: forestgreen
@@ -21,7 +21,7 @@
     show_comparison_label: true
     series_types: {}
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 0
     col: 0
     width: 12
@@ -32,9 +32,9 @@
     explore: actors
     type: single_value
     fields:
-    - actors.picture_big
+    - people.picture_big
     sorts:
-    - actors.picture_big
+    - people.picture_big
     limit: 500
     custom_color_enabled: false
     custom_color: forestgreen
@@ -46,7 +46,7 @@
     show_view_names: false
     series_types: {}
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 0
     col: 18
     width: 6
@@ -65,7 +65,7 @@
     note_display: hover
     note_text: Based on main and secondary roles
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 3
     col: 0
     width: 6
@@ -84,7 +84,7 @@
     note_display: hover
     note_text: Based on main and secondary roles
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 3
     col: 6
     width: 6
@@ -109,7 +109,7 @@
     note_display: hover
     note_text: Based on main and secondary roles
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 7
     col: 0
     width: 6
@@ -128,7 +128,7 @@
     note_display: hover
     note_text: Based on main and secondary roles
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 7
     col: 6
     width: 6
@@ -159,7 +159,7 @@
     note_display: hover
     note_text: Based on main and secondary roles
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 3
     col: 12
     width: 6
@@ -172,11 +172,11 @@
     fields:
     - movies.release_year
     - movies.title
-    - actors.character_name
+    - people.character_name
     - ratings_summary.average_rating
     - genres.all_genres
     filters:
-      actors.role_type: Main
+      people.role_type: Main
     sorts:
     - ratings_summary.average_rating desc
     limit: 5
@@ -196,7 +196,7 @@
     note_display: hover
     note_text: Based on main roles
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 11
     col: 0
     width: 12
@@ -209,11 +209,11 @@
     fields:
     - movies.release_year
     - movies.title
-    - actors.character_name
+    - people.character_name
     - ratings_summary.average_rating
     - genres.all_genres
     filters:
-      actors.role_type: Main
+      people.role_type: Main
     sorts:
     - ratings_summary.average_rating
     limit: 5
@@ -233,7 +233,7 @@
     note_display: hover
     note_text: Based on main roles
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 11
     col: 12
     width: 12
@@ -244,12 +244,12 @@
     explore: actors
     type: sankey
     fields:
-    - actors.role_type
+    - people.role_type
     - genres.genre
     - movies.movies_count
     sorts:
     - genres.genre
-    - actors.role_type
+    - people.role_type
     limit: 500
     query_timezone: UTC
     stacking: ''
@@ -327,7 +327,7 @@
     note_text: Movies can have more than one genre, so total amount of roles in this
       chart can be greater than the total amount of movies in the scorecard above.
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 16
     col: 12
     width: 12
@@ -350,7 +350,7 @@
       Based on total movies, average rating and average revenue, only for main roles and movies with more than 500 ratings.
       Actors with less than 5 movies matching these criteria will have a rank equal to NULL.
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 0
     col: 12
     width: 6
@@ -363,8 +363,8 @@
     fields:
     - movies.years_from_start_of_career
     - ratings_summary.average_rating
-    - actors.main_roles_count
-    - actors.secondary_roles_count
+    - people.main_roles_count
+    - people.secondary_roles_count
     - ratings_summary.rating_count
     - ratings_summary.rating_sumproduct
     sorts:
@@ -381,14 +381,14 @@
       _type_hint: number
     - table_calculation: cumulative_main_roles_count
       label: Cumulative Main Roles Count
-      expression: running_total(${actors.main_roles_count})
+      expression: running_total(${people.main_roles_count})
       value_format:
       value_format_name:
       _kind_hint: measure
       _type_hint: number
     - table_calculation: cumulative_secondary_roles_count
       label: Cumulative Secondary Roles Count
-      expression: running_total(${actors.secondary_roles_count})
+      expression: running_total(${people.secondary_roles_count})
       value_format:
       value_format_name:
       _kind_hint: measure
@@ -479,19 +479,19 @@
     discontinuous_nulls: true
     query_timezone: UTC
     hidden_fields:
-    - actors.main_roles_count
+    - people.main_roles_count
     - ratings_summary.rating_count
     - ratings_summary.rating_sumproduct
     - cumulative_rating_count
     - cumulative_rating_sumproduct
-    - actors.secondary_roles_count
+    - people.secondary_roles_count
     note_state: collapsed
     note_display: hover
     note_text: |-
       Cumulative number of main and second roles by year of career.
       Cumulative rating is the average rating of all movies up to a given year in the actor's career.
     listen:
-      Id: actors.actor_id
+      Id: people.actor_id
     row: 16
     col: 0
     width: 12
@@ -507,4 +507,4 @@
     explore: actors
     listens_to_filters:
     - Name
-    field: actors.actor_id
+    field: people.actor_id

@@ -8,22 +8,22 @@
     explore: actors
     type: looker_column
     fields:
-    - actors.gender
+    - people.gender
     - genres.genre
-    - actors.roles_count
+    - people.roles_count
     pivots:
-    - actors.gender
+    - people.gender
     filters:
-      actors.gender: "-NULL"
+      people.gender: "-NULL"
     sorts:
-    - actors.gender 0
+    - people.gender 0
     - female desc
     limit: 500
     row_total: right
     dynamic_fields:
     - table_calculation: female
       label: Female %
-      expression: pivot_where(${actors.gender} = "Female", ${actors.roles_count})/${actors.roles_count:row_total}
+      expression: pivot_where(${people.gender} = "Female", ${people.roles_count})/${people.roles_count:row_total}
       value_format:
       value_format_name: percent_1
       _kind_hint: supermeasure
@@ -42,8 +42,8 @@
       2 - movies.movies_count: "#e9b404"
       Female - movies.movies_count: "#5245ed"
       Male - movies.movies_count: "#e9b404"
-      Female - actors.roles_count: "#3D6D9E"
-      Male - actors.roles_count: "#e7e7e7"
+      Female - people.roles_count: "#3D6D9E"
+      Male - people.roles_count: "#e7e7e7"
     series_labels:
       2 - movies.movies_count: Male
       1 - movies.movies_count: Female
@@ -127,21 +127,21 @@
     explore: actors
     type: single_value
     fields:
-    - actors.roles_count
-    - actors.gender
+    - people.roles_count
+    - people.gender
     pivots:
-    - actors.gender
+    - people.gender
     filters:
-      actors.gender: "-NULL"
+      people.gender: "-NULL"
     sorts:
-    - actors.roles_count desc 0
-    - actors.gender
+    - people.roles_count desc 0
+    - people.gender
     limit: 500
     row_total: right
     dynamic_fields:
     - table_calculation: of_female_roles
       label: "% of Female Roles"
-      expression: pivot_where(${actors.gender}="Female",${actors.roles_count})/${actors.roles_count:row_total}
+      expression: pivot_where(${people.gender}="Female",${people.roles_count})/${people.roles_count:row_total}
       value_format:
       value_format_name: percent_1
       _kind_hint: supermeasure
@@ -222,7 +222,7 @@
     hidden_fields:
     - cumulative_rating_count
     - cumulative_rating_sumproduct
-    - actors.roles_count
+    - people.roles_count
     listen: {}
     row: 57
     col: 9
@@ -359,8 +359,8 @@
     type: table
     fields:
     - actors_ranks_final.actor_rank_medium
-    - actors.picture_small
-    - actors.actor_name_medium
+    - people.picture_small
+    - people.actor_name_medium
     filters:
       actors_ranks_final.actor_rank: NOT NULL
     sorts:
@@ -374,9 +374,9 @@
     hide_totals: false
     hide_row_totals: false
     series_labels:
-      actors.picture_small: Picture
-      actors.actor_name: Name
-      actors.actor_name_medium: Name
+      people.picture_small: Picture
+      people.actor_name: Name
+      people.actor_name_medium: Name
       actors_ranks_final.actor_rank: Rank
       actors_ranks_final.actor_rank_medium: Rank
     table_theme: gray
@@ -402,30 +402,30 @@
     type: looker_column
     fields:
     - movies.release_year
-    - actors.roles_count
-    - actors.gender
+    - people.roles_count
+    - people.gender
     pivots:
-    - actors.gender
+    - people.gender
     fill_fields:
     - movies.release_year
     filters:
-      actors.gender: "-NULL"
+      people.gender: "-NULL"
     sorts:
     - movies.release_year desc
-    - actors.gender
+    - people.gender
     limit: 500
     row_total: right
     dynamic_fields:
     - table_calculation: of_female_roles
       label: "% of Female Roles"
-      expression: pivot_where(${actors.gender}="Female", ${actors.roles_count})/${actors.roles_count:row_total}
+      expression: pivot_where(${people.gender}="Female", ${people.roles_count})/${people.roles_count:row_total}
       value_format:
       value_format_name: percent_1
       _kind_hint: supermeasure
       _type_hint: number
     - table_calculation: keep_in_viz
       label: keep_in_viz
-      expression: "${actors.roles_count:row_total} >= 200"
+      expression: "${people.roles_count:row_total} >= 200"
       value_format:
       value_format_name:
       _kind_hint: supermeasure
@@ -445,8 +445,8 @@
     show_view_names: false
     point_style: none
     series_colors:
-      Male - actors.main_roles_count: "#d0d0d0"
-      Female - actors.main_roles_count: "#3D6D9E"
+      Male - people.main_roles_count: "#d0d0d0"
+      Female - people.main_roles_count: "#3D6D9E"
       Male - of_total: "#d0d0d0"
       Female - of_total: "#3D6D9E"
       Female - of_total_main_roles: "#3D6D9E"
@@ -515,7 +515,7 @@
     hidden_fields:
     - calculation_2
     - keep_in_viz
-    - actors.roles_count
+    - people.roles_count
     hidden_points_if_no:
     - calculation_2
     - keep_in_viz
@@ -914,7 +914,7 @@
     explore: actors
     type: single_value
     fields:
-    - actors.actors_count
+    - people.actors_count
     limit: 500
     show_view_names: 'true'
     series_types: {}
@@ -929,7 +929,7 @@
     explore: actors
     type: single_value
     fields:
-    - actors.roles_count
+    - people.roles_count
     limit: 500
     show_view_names: 'true'
     series_types: {}

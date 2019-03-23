@@ -4,7 +4,7 @@ view: actors_ranks {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
     explore_source: actors {
-      column: actor_id {}
+      column: actor_id { field: people.actor_id }
       column: total_movies_count { field: movies.movies_count }
       column: average_rating { field: ratings_summary.average_rating }
       column: average_revenue { field: movies.average_revenue }
@@ -27,7 +27,7 @@ view: actors_ranks {
         sql: RANK() OVER (ORDER BY average_revenue ASC) ;;
       }
       filters: {
-        field: actors.role_type
+        field: people.role_type
         value: "Main"
       }
       filters: {
@@ -261,10 +261,12 @@ view: actors_ranks_final {
   }
 
   dimension: actor_rank {
+    group_label: "Rank"
     type: number
   }
 
   dimension: actor_rank_medium {
+    group_label: "Rank"
     type: number
     sql: ${actor_rank} ;;
     html: <center><b><font size="5px">{{value}}</font></b></center> ;;
