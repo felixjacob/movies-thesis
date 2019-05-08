@@ -182,7 +182,6 @@ view: movies {
   dimension: title {
     type: string
     sql: ${TABLE}.title ;;
-    label: "Title"
     link: {
       label: "Link to IMDB"
       url: "https://www.imdb.com/title/{{imdb_id._value}}"
