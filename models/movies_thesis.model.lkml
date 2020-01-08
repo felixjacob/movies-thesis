@@ -1,8 +1,8 @@
 connection: "thesis_bq"
 
 # include all the views
-include: "*.view"
-include: "*.dashboard"
+include: "/views/*.view"
+include: "/dashboards/*.dashboard"
 
 datagroup: movies_thesis_default_datagroup {
   sql_trigger: SELECT 1 ;;

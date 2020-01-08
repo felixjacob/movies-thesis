@@ -1,4 +1,4 @@
-include: "movies_thesis.model.lkml"
+include: "/models/movies_thesis.model.lkml"
 
 view: actors_ranks {
   derived_table: {
