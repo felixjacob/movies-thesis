@@ -40,39 +40,6 @@ view: actors_ranks {
     }
   }
 
-#   parameter: total_movies_rank_order {
-#     type: unquoted
-#     default_value: "Descending"
-#     allowed_value: {
-#       value: "Ascending"
-#     }
-#     allowed_value: {
-#       value: "Descending"
-#     }
-#   }
-#
-#   parameter: average_rating_rank_order {
-#     type: unquoted
-#     default_value: "Descending"
-#     allowed_value: {
-#       value: "Ascending"
-#     }
-#     allowed_value: {
-#       value: "Descending"
-#     }
-#   }
-#
-#   parameter: average_revenue_rank_order {
-#     type: unquoted
-#     default_value: "Descending"
-#     allowed_value: {
-#       value: "Ascending"
-#     }
-#     allowed_value: {
-#       value: "Descending"
-#     }
-#   }
-
   dimension: actor_id {
     primary_key: yes
     type: number
@@ -115,23 +82,6 @@ view: actors_ranks {
   dimension: revenue_rank_asc {
     type: number
   }
-
-#   dimension: overall_rank_sum {
-#     type: number
-#     sql:
-#     {% if total_movies_rank_order._parameter_value == 'Ascending' %} ${total_movies_rank_asc}
-#     {% else %} ${total_movies_rank_desc} {% endif %}
-#     {% if average_rating_rank_order._parameter_value == 'Ascending' %} + ${rating_rank_asc}
-#     {% else %} + ${rating_rank_desc} {% endif %}
-#     {% if average_revenue_rank_order._parameter_value == 'Ascending' %} + ${revenue_rank_asc}
-#     {% else %} + ${revenue_rank_desc} {% endif %}
-#     ;;
-#   }
-#
-#   dimension: overall_rank_sum_inverted {
-#     type: number
-#     sql: 1 / ${overall_rank_sum} ;;
-#   }
 }
 
 
