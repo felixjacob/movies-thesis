@@ -1,5 +1,3 @@
-include: "/models/movies_thesis.model.lkml"
-
 view: actors_ranks {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
