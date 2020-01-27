@@ -3,6 +3,7 @@ include: "/models/movies_thesis.model.lkml"
 view: actors_ranks {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
+    publish_as_db_view: yes
     explore_source: actors {
       column: actor_id { field: people.actor_id }
       column: total_movies_count { field: movies.movies_count }

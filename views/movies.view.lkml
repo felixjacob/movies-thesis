@@ -1,6 +1,7 @@
 view: movies {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
+    publish_as_db_view: yes
     sql:
     SELECT DISTINCT
       id AS movie_id,

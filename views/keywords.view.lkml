@@ -1,6 +1,7 @@
 view: keywords {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
+    publish_as_db_view: yes
     sql:
     WITH
       keywords AS (

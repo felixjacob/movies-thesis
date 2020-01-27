@@ -56,6 +56,7 @@ view: ratings {
 view: ratings_summary {
   derived_table: {
     datagroup_trigger: movies_thesis_default_datagroup
+    publish_as_db_view: yes
     explore_source: ratings {
       column: movie_id {}
       column: rating {}
