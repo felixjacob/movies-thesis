@@ -5,7 +5,7 @@ include: "/views/*.view"
 include: "/dashboards/*.dashboard"
 
 datagroup: movies_thesis_default_datagroup {
-  sql_trigger: SELECT 1 ;;
+  sql_trigger: SELECT MAX(timestamp) FROM movies_data.ratings ;;
 }
 
 persist_with: movies_thesis_default_datagroup
